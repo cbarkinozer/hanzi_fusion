@@ -4,6 +4,28 @@
 
 **A captivating mobile game where you combine Chinese characters to discover new ones, inspired by classics like *Little Alchemy* and *Infinite Craft*. Built with Flutter and Flame.**
 
+Fundamental char numbers that will be learned at Intro (HSK0):
+131, 27, 94, 732, 308
+
+[
+  "一", "二", "丨", "十", "干", "丷", "半", "丿", "㇏", "人",
+  "亻", "从", "个", "入", "什", "𠂉", "午", "年", "ㄱ", "口",
+  "中", "丩", "叫", "八", "只", "介", "乚", "儿", "四", "兄",
+  "兑", "讠", "说", "计", "认", "识", "㇉", "马", "吗", "骂",
+  "乙", "乞", "吃", "气", "冫", "飞", "况", "日", "旧", "旦",
+  "但", "早", "唱", "电", "七", "化", "丶", "白", "百", "㇇",
+  "今", "千", "舌", "话", "氵", "活", "乱", "汽", "㇆", "月",
+  "用", "胖", "朋", "明", "习", "勹", "⺈", "句", "勺", "的",
+  "亅", "了", "子", "寸", "时", "辶", "过", "付", "讨", "才",
+  "牙", "卜", "上", "下", "卡", "吓", "占", "灬", "点", "让",
+  "止", "正", "𤴓", "是", "目", "罒", "自", "面", "身", "谢",
+  "弋", "代", "戈", "手", "扌", "我", "或", "看", "担", "拍",
+  "提", "找", "木", "本", "体", "末", "米", "来", "呆", "休",
+  "桌", "相", "禾", "和", "种", "香", "几", "机", "心", "忄",
+  "想", "息", "总", "怕", "匚", "己"
+]
+For remaining recipes write a script that will divide to 2 chars if 4 divide to 2 by 2 chars. Single ones will be stored different at will asked to LLM. Triplets will be divided from 2 to 1.
+
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
 [![Status](https://img.shields.io/badge/status-in%20development-orange)](https://github.com/cbarkinozer/hanzi_fusion)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/cbarkinozer/hanzi_fusion)
