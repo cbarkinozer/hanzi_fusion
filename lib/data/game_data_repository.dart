@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
 import 'package:hanzi_fusion/data/models/recipe_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -30,7 +31,7 @@ class GameDataRepository {
 // A Riverpod provider that creates and holds a single instance of our repository.
 // The `keepAlive` flag ensures the data is loaded once and not disposed.
 @Riverpod(keepAlive: true)
-Future<GameDataRepository> gameDataRepository(GameDataRepositoryRef ref) async {
+Future<GameDataRepository> gameDataRepository(Ref ref) async {
   final repository = GameDataRepository();
   await repository.loadData();
   return repository;
