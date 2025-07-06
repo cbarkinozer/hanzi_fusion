@@ -1,17 +1,12 @@
-# Hazi-fusion: The Chinese Character Crafting Game
+# Hanzi Fusion: The Chinese Character Crafting Game
 
-![Hazi-fusion Banner](<logo.jpg>)
-**A captivating mobile game where you combine Chinese characters to discover new ones, inspired by classics like *Little Alchemy* and *Infinite Craft*. Built with Flutter.**
+![Hanzi Fusion Banner](logo.jpg)
+
+**A captivating mobile game where you combine Chinese characters to discover new ones, inspired by classics like *Little Alchemy* and *Infinite Craft*. Built with Flutter and Flame.**
 
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/your-username/hazi-fusion)
-
----
-# TODO
-* Create the project with "flutter create .
-* Add necessary dependencies: "flutter pub add flutter_riverpod riverpod_annotation flutter pub add dev:build_runner dev:json_serializable dev:riverpod_generator flutter pub add json_annotation".
-
-
+[![Status](https://img.shields.io/badge/status-in%20development-orange)](https://github.com/cbarkinozer/hanzi_fusion)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/cbarkinozer/hanzi_fusion)
 
 ---
 
@@ -24,14 +19,14 @@
 -   [🚀 Getting Started](#-getting-started)
 -   [📊 Data Structure](#-data-structure)
 -   [🗺️ Development Roadmap](#️-development-roadmap)
+-   [🤔 Major Problems and Their Solutions](#-major-problems-and-their-solutions)
 -   [🤝 How to Contribute](#-how-to-contribute)
--   [📜 License](#-license)
 
 ---
 
 ## 🎯 Project Overview
 
-Hazi-fusion is a puzzle game that leverages the beautiful, component-based nature of Chinese characters (Hanzi). Players start with a handful of basic elemental characters (e.g., 木 tree, 水 water, 人 person) and combine them by dragging and dropping them together. Successful combinations, based on etymology, semantics, or phonetic clues, create new characters, which are then added to the player's inventory for further fusion.
+Hanzi Fusion is a puzzle game that leverages the beautiful, component-based nature of Chinese characters (Hanzi). Players start with a handful of basic elemental characters (e.g., 木 tree, 水 water, 人 person) and combine them by dragging and dropping them together. Successful combinations, based on etymology, semantics, or phonetic clues, create new characters, which are then added to the player's inventory for further fusion.
 
 The goal is to create an experience that is not only addictive and fun but also subtly educational, offering players a glimpse into the logic and artistry behind one of the world's oldest writing systems.
 
@@ -41,10 +36,11 @@ The goal is to create an experience that is not only addictive and fun but also 
 
 -   **Intuitive Drag & Drop Interface:** Simple and satisfying core mechanic.
 -   **Expansive Discovery System:** Hundreds of characters to discover, from simple pictographs to complex ideograms.
--   **Discovery Book:** An in-game encyclopedia that tracks all discovered characters, showing their pinyin (pronunciation), meaning, and a short etymology.
--   **Hint System:** A non-intrusive system to help players when they get stuck.
 -   **Local Progress Saving:** Your discoveries are automatically saved to your device.
 -   **Cross-Platform:** Built with Flutter for a native experience on both Android and iOS from a single codebase.
+-   **(In Progress) Audio Feedback:** Sound effects for successful and failed fusions.
+-   **(Planned) Discovery Book:** An in-game encyclopedia that tracks all discovered characters, showing their pinyin (pronunciation), meaning, and a short etymology.
+-   **(Planned) Hint System:** A non-intrusive system to help players when they get stuck.
 
 ---
 
@@ -57,8 +53,8 @@ This project is built using the Flutter framework, chosen for its high-performan
 -   **Game/Rendering Logic:** [**Flame Engine**](https://flame-engine.org/) - A minimalist 2D game engine for Flutter that's perfect for handling the game canvas, sprites, and drag-and-drop gestures.
 -   **State Management:** [**Riverpod**](https://riverpod.dev/) - For clean, robust, and scalable state management, separating UI from business logic (e.g., managing the list of discovered characters).
 -   **Local Storage:** [**shared_preferences**](https://pub.dev/packages/shared_preferences) - For persisting the player's list of discovered character IDs locally.
+-   **Audio:** [**flame_audio**](https://pub.dev/packages/flame_audio) - For playing sound effects for game events.
 -   **Data Source:** `JSON` files stored in the app's assets for all character and recipe data. This allows for easy updates and management.
--   **Backend (Future):** [**Firebase**](https://firebase.google.com/) - For potential future features like cloud sync (Firestore) and user authentication (Auth).
 
 ---
 
@@ -67,30 +63,27 @@ This project is built using the Flutter framework, chosen for its high-performan
 The project follows a standard feature-first folder structure to maintain separation of concerns.
 
 ```
-hazi_fusion/
+hanzi_fusion/
 ├── assets/
-│   ├── data/
-│   │   ├── characters.json   # Master list of all characters and their properties
-│   │   └── recipes.json      # List of all valid combinations
-│   ├── fonts/
-│   │   └── NotoSansSC.ttf    # Primary font for UI and characters
-│   └── sfx/                  # Sound effects for game events
+│   └── data/
+│       ├── characters.json   # Master list of all characters (ID, char, pinyin, meaning)
+│       └── recipes.json      # Human-readable list of all valid combinations
 │
 ├── lib/
 │   ├── data/
-│   │   ├── models/           # Dart classes for Character, Recipe, etc.
-│   │   └── data_source.dart  # Logic for loading and parsing JSON data
+│   │   ├── models/           # Dart models for Character and Recipe (with JSON serialization)
+│   │   └── game_data_repository.dart # Loads and processes all game data from JSON
 │   │
 │   ├── game/
-│   │   ├── components/       # Flame components (character_sprite, fusion_area)
-│   │   └── hazi_fusion_game.dart # The main Flame game class
+│   │   ├── components/       # Flame components (e.g., CharacterComponent)
+│   │   └── hanzi_fusion_game.dart # The main Flame game class, handling logic
 │   │
 │   ├── providers/
-│   │   └── player_progress_provider.dart # Riverpod provider for player's state
+│   │   └── player_progress_provider.dart # Riverpod provider for managing player's discovered characters
 │   │
 │   ├── ui/
-│   │   ├── screens/          # Main app screens (GameScreen, EncyclopediaScreen)
-│   │   └── widgets/          # Reusable UI widgets (custom buttons, panels)
+│   │   ├── screens/          # Main app screens (GameScreen)
+│   │   └── widgets/          # Reusable UI widgets (InventoryPanel)
 │   │
 │   └── main.dart             # App entry point
 │
@@ -113,24 +106,29 @@ Follow these instructions to get the project running on your local machine for d
 
 1.  **Clone the repository:**
     ```sh
-    git clone https://github.com/your-username/hazi-fusion.git
-    cd hazi-fusion
+    git clone https://github.com/cbarkinozer/hanzi_fusion.git
+    cd hanzi-fusion
     ```
 2.  **Install dependencies:**
     ```sh
     flutter pub get
     ```
 3.  **Ensure assets are registered:**
-    Open `pubspec.yaml` and make sure the `assets/` directory is included under the `flutter:` section.
+    Open `pubspec.yaml` and make sure the `assets/data/` directory is included under the `flutter:` section.
     ```yaml
     flutter:
       uses-material-design: true
       assets:
         - assets/data/
-        - assets/fonts/
-        - assets/sfx/
+        # - assets/fonts/   # Add when custom fonts are included
+        # - assets/audio/   # Add when sound effects are included
     ```
-4.  **Run the app:**
+4.  **Run the code generator:**
+    The project uses code generation for models and providers. Run this command to generate the necessary files:
+    ```sh
+    dart run build_runner watch
+    ```
+5.  **Run the app:**
     ```sh
     flutter run
     ```
@@ -139,48 +137,52 @@ Follow these instructions to get the project running on your local machine for d
 
 ## 📊 Data Structure
 
-The game's content is driven by two key JSON files. The Dart models will be generated based on these structures.
+The game's content is driven by two key JSON files.
 
 ### `characters.json`
 
-An array of all characters in the game.
+An array of all characters in the game. Each character has a unique ID, the character itself, pinyin, and meaning.
 
 ```json
 [
   {
-    "id": 1,
+    "id": 10,
     "char": "人",
     "pinyin": "rén",
-    "meaning": "person",
-    "is_base_element": true
+    "meaning": "person"
   },
   {
-    "id": 3,
+    "id": 123,
     "char": "木",
     "pinyin": "mù",
-    "meaning": "tree, wood",
-    "is_base_element": true
+    "meaning": "wood/tree"
   },
   {
-    "id": 5,
+    "id": 130,
     "char": "休",
     "pinyin": "xiū",
-    "meaning": "rest (a person leaning on a tree)",
-    "is_base_element": false
+    "meaning": "rest"
   }
 ]
 ```
 
 ### `recipes.json`
 
-An array defining all valid combinations using character IDs for efficiency.
+An array defining all valid combinations. It uses the actual characters as inputs, making it easy for anyone to contribute new recipes without needing to look up IDs. The application intelligently converts these into a more performant, ID-based format at runtime.
 
 ```json
 [
   {
-    "input1_id": 1,
-    "input2_id": 3,
-    "output_id": 5
+    "inputs": ["人", "木"],
+    "output": "休"
+  },
+  {
+    "inputs": ["日", "月"],
+    "output": "明"
+  },
+  {
+    "inputs": ["木", "木"],
+    "output": "林"
   }
 ]
 ```
@@ -189,11 +191,7 @@ An array defining all valid combinations using character IDs for efficiency.
 
 ## 🗺️ Development Roadmap
 
-The project is broken down into four key milestones.
-
-## 🗺️ Development Roadmap
-
-The project is broken down into four key milestones.
+The project is broken down into key milestones. `☑️` = Done, `🚧` = In Progress, `⬜` = To-Do.
 
 ### ☑️ Milestone 1: Core Engine (MVP)
 
@@ -208,27 +206,22 @@ The basic gameplay loop is functional. Players can discover new characters by co
 
 ### ⬜ Milestone 2: UI/UX & Polish
 
-This milestone focuses on creating a polished and satisfying user experience with clear feedback and a way to view discoveries.
+This milestone focuses on creating a polished and satisfying user experience.
 
 -   [ ] **Design and implement a clean UI for all screens.**
 -   [ ] **Add satisfying animations** for successful (e.g., particle burst) and failed (e.g., shake) fusions.
--   [ ] **Integrate sound effects** for key game events (fusion, failure, UI clicks).
+-   [🚧] **Integrate sound effects** for key game events (fusion, failure, UI clicks).
 -   [ ] **Build the "Discovery Book" screen** to browse all characters, showing locked and unlocked states.
--   [ ] **Implement the Character Info Page/Dialog** that shows:
-    -   Pinyin and English meaning.
-    -   A "play pronunciation" button.
-    -   An animated GIF of the stroke order.
--   [ ] Add a main menu or settings button to the game screen to navigate to the Discovery Book.
+-   [ ] **Implement the Character Info Page/Dialog** that shows details and stroke order.
+-   [ ] Add a main menu or settings button to the game screen.
 
-### ⬜ Milestone 3: Content & Gameplay Expansion
+### 🚧 Milestone 3: Content & Gameplay Expansion
 
 This milestone focuses on deepening the educational content and expanding the gameplay.
 
--   [ ] **Expand `characters.json` with etymological data:**
-    -   Add fields for semantic/phonetic components.
-    -   Add URLs or asset paths for stroke order GIFs and pronunciation audio.
--   [ ] **Implement phono-semantic highlighting** on the Character Info Page (e.g., coloring components gold for semantic, red for phonetic).
--   [ ] **Expand character and recipe data** to over 100+ discoveries.
+-   [ ] **Expand `characters.json` with etymological data** (e.g., components, audio URLs).
+-   [ ] **Implement phono-semantic highlighting** on the Character Info Page.
+-   [🚧] **Expand character and recipe data** to over 200+ discoveries.
 -   [ ] Balance the discovery path to ensure smooth progression.
 -   [ ] Implement a simple hint system.
 -   [ ] Add a settings screen (e.g., for sound volume, resetting progress).
@@ -242,78 +235,41 @@ This milestone focuses on deepening the educational content and expanding the ga
 
 ---
 
-# Major Problems and Their Solutions
+## 🤔 Major Problems and Their Solutions
+
+This section documents key design decisions and the reasoning behind them.
 
 ### 1. The Challenge: Character Complexity vs. Usage Frequency (HSK)
 
-**The Problem:** The most logically simple characters to build (e.g., `林`, `森`) are not always the most useful words for a beginner to learn (e.g., `电影`, `我`, `是`). A game that only follows etymology might feel impractical, while a game that only follows HSK order might have nonsensical recipes.
+**The Problem:** The most logically simple characters to build (e.g., `林`, `森`) are not always the most useful words for a beginner to learn (e.g., `电影`, `我`, `是`). A game that only follows etymology might feel impractical.
 
 **The Solution: A Tiered Discovery System.**
 
-Think of your game's progression not as a straight line, but as expanding concentric circles.
+The game's progression is designed in tiers, starting with etymologically simple characters to teach the *principle* of Hanzi construction, and then expanding to include more common vocabulary (HSK words) as the player builds their inventory of components.
 
-*   **Tier 0: The Primitives (The Starting Elements).**
-    *   This is your initial set of characters. These should be the most fundamental graphical components, many of which are also radicals.
-    *   **Examples:** `人`, `口`, `木`, `火`, `水`, `日`, `月`, `一`, `十`, `力`, `心`.
-    *   **Purpose:** To provide the absolute basic building blocks for the game mechanic.
-
-*   **Tier 1: The Etymological Foundation (The Early Game).**
-    *   This is the initial phase of discovery. **You should absolutely prioritize etymologically simple characters first.** This is crucial. Why? Because it teaches the *principle* of how characters are built. This is the "magic" of your game.
-    *   **Recipes:** `人 + 木 = 休` (rest), `木 + 木 = 林` (woods), `日 + 月 = 明` (bright).
-    *   **Player Takeaway:** "Wow, Chinese characters make sense! They're like little pictures and puzzles." This is the hook. You are right to deviate from strict HSK order here.
-
-*   **Tier 2: Vocabulary Building (The Mid-Game).**
-    *   Once a player has a solid inventory of 50-100 basic characters (many of which *will* be HSK 1 characters just by their nature), the game's focus can shift. Now they have the components to build useful *words*.
-    *   **Recipes:** `电 + 话 = 电话` (telephone), `电 + 影 = 电影` (movie), `手 + 机 = 手机` (mobile phone).
-    *   **Balancing:** Your HSK lists become your guide for which recipes to prioritize in this tier. Look at the HSK 1 & 2 vocabulary lists. See a word like `飞机` (airplane)? If the player has discovered `飞` and `机`, that's a perfect high-value recipe to include.
-
-**How to Implement This:** You don't need a complex system. It's about how you design your recipe book. The early recipes you create should focus on single-character outputs from simple components. The later recipes can focus on combining those discoveries into multi-character words. The progression will feel natural to the player.
-
----
+*   **Tier 0: Primitives:** The starting elements (`人`, `木`, `水`, etc.).
+*   **Tier 1: Etymological Foundation:** The early game focuses on intuitive combinations like `人 + 木 = 休` (rest). This is the "magic" that hooks the player.
+*   **Tier 2: Vocabulary Building:** The mid-game introduces recipes for common words like `电 + 话 = 电话` (telephone), using the components discovered in Tier 1.
 
 ### 2. The Challenge: Folk Etymologies vs. Academic Rigor
 
-**The Problem:** Many easy-to-remember stories for characters (mnemonics) are not historically accurate. Should the game use the "fun but false" story or the "correct but complex" one?
+**The Problem:** Many easy-to-remember stories for characters are not historically accurate. Should the game use the "fun but false" story or the "correct but complex" one?
 
 **The Solution: Separate the Mechanic from the Explanation.**
 
-This is a brilliant use case for the "Discovery Panel" we've planned.
-
-*   **The Crafting Logic (The Mechanic): Prioritize Fun and Memorability.**
-    *   The recipe `口 (mouth) + 鳥 (bird) = 鳴 (to chirp)` is a perfect example. It's an intuitive, delightful "folk etymology." It makes a great game recipe. **Use it.** The primary goal of the game loop is engagement and creating a mental hook.
-    *   Your rule for a recipe should be: "Is this a plausible and helpful mnemonic story?" If yes, it's a candidate for a recipe.
-
-*   **The Discovery Panel (The Explanation): Provide Accurate Information.**
-    *   When the player successfully creates `鳴`, a panel pops up. This is where you deliver the educational value. You can structure it in layers:
-        1.  **Crafting Story:** "You combined `Mouth` and `Bird` to discover `Chirp`!"
-        2.  **Pinyin / Meaning:** `míng` - to chirp, make a sound.
-        3.  **True Etymology (Optional but amazing):** A small "Learn More" or "Etymology" section. "This is a pictophonetic character. The `口` radical gives the meaning (related to the mouth), while `鳥` (niǎo) provides a clue for the sound (míng)."
-
-**The LLM Idea:** Your friend's suggestion to use an LLM is spot-on for the "True Etymology" part. You could pre-generate these explanations for your JSON data so you don't need a live API call. This gives you the best of both worlds: a fun, game-like recipe and an accurate, optional deep-dive for curious learners.
-
----
+*   **The Crafting Logic (The Mechanic): Prioritize Fun and Memorability.** The recipes in `recipes.json` are designed to be intuitive and create a memorable mental hook, even if they are based on folk etymology. The goal of the game loop is engagement.
+*   **The Discovery Panel (The Explanation): Provide Accurate Information.** When a character is discovered (a feature planned for Milestone 2), the info panel will provide the accurate etymology, separating the fun mnemonic from the real linguistic details.
 
 ### 3. The Challenge: Semantic vs. Phonetic Components
 
-**The Problem:** A single component like `马 (mǎ)` can give meaning (in `驾` - to drive a chariot) or sound (in `妈` - mā). How do you teach this without a confusing lecture?
+**The Problem:** A single component like `马 (mǎ)` can give meaning (in `驾`) or sound (in `妈`). How do you teach this without a confusing lecture?
 
 **The Solution: Implicit Learning Through UI and Pattern Recognition.**
 
-Do not overwhelm the user with terminology. Let them *discover* the pattern themselves. Your UI can guide them.
+Instead of complex rules, the game will guide the user with subtle UI cues.
 
-*   **Do Not Create Different "Types" of Elements.** A `木` is a `木`. Making a "Semantic Wood" and a "Phonetic Wood" is a usability nightmare. The character is the element, and its *function changes based on context.*
-
-*   **Use Subtle UI Cues:** This is the elegant solution.
-    *   **On Combination:** When a successful combination happens, use a subtle animation or color-coding to show the role each component played.
-        *   When `女 + 马 = 妈`, as the new character forms, make the `女` part glow blue (for meaning) and the `马` part glow green (for sound).
-        *   When `木 + 木 = 林`, make both `木` components glow blue (for meaning).
-    *   **In the Discovery Panel:** Reinforce this with simple language.
-        *   For `妈`: "Meaning from: `女` (female). Sound from: `马` (mǎ -> mā)."
-        *   For `林`: "Meaning from: `木` (tree) + `木` (tree)."
-
-**The "Aha!" Moment:** The player isn't told the rule upfront. But after they've made `妈 (mā)`, `骂 (mà)`, and `吗 (ma)`, they will have an epiphany: **"Wait a minute... every time I use `马`, the new character sounds like 'ma'! And the other part tells me what it's about!"**
-
-You haven't lectured them. You've created a system where they have discovered one of the most fundamental principles of Chinese characters for themselves. This is incredibly powerful and rewarding.
+*   **On Combination:** When a character is formed, an animation can highlight which component provided the meaning (e.g., glows blue) and which provided the sound (e.g., glows green).
+*   **The "Aha!" Moment:** After making a few characters with the same phonetic component (like `妈`, `骂`, `吗`), the player will discover the pattern for themselves, which is a far more powerful and rewarding learning experience than being told the rule upfront.
 
 ## 🤝 How to Contribute
 
@@ -321,9 +277,7 @@ Contributions are welcome! If you have ideas for new features, bug fixes, or new
 
 1.  **Fork** the repository.
 2.  Create a new **branch** (`git checkout -b feature/your-feature-name`).
-3.  Make your changes.
+3.  Make your changes. (Adding new recipes to `assets/data/recipes.json` is a great way to start!)
 4.  Commit your changes (`git commit -m 'Add some feature'`).
 5.  Push to the branch (`git push origin feature/your-feature-name`).
 6.  Open a **Pull Request**.
-
----
