@@ -39,6 +39,7 @@ dependencies:
   json_annotation: ^4.9.0
   flame: ^1.30.0
   shared_preferences: ^2.5.3
+  flame_audio: ^2.11.7
 
 dev_dependencies:
   flutter_test:

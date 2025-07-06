@@ -2,21 +2,29 @@
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
 import 'package:hanzi_fusion/game/hanzi_fusion_game.dart';
 import 'package:hanzi_fusion/ui/widgets/inventory_panel.dart';
 
-// Convert back to a StatefulWidget to hold the game instance.
-class GameScreen extends StatefulWidget {
+// Convert to a ConsumerStatefulWidget to hold the game instance and access ref.
+class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
 
   @override
-  State<GameScreen> createState() => _GameScreenState();
+  ConsumerState<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends ConsumerState<GameScreen> {
   // Create a single, persistent instance of our game.
-  final HanziFusionGame _game = HanziFusionGame();
+  late final HanziFusionGame _game;
+
+  @override
+  void initState() {
+    super.initState();
+    // Pass the Riverpod ref to the game so it can interact with providers.
+    _game = HanziFusionGame(ref: ref);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -193,11 +193,11 @@ The project is broken down into four key milestones.
 
 ### ☑️ Milestone 1: Core Engine (MVP)
 
--   [ ] Setup Flutter project with Flame and Riverpod.
--   [ ] Implement data loading from `characters.json` and `recipes.json`.
--   [ ] Create the basic game screen with an inventory panel and a fusion area.
--   [ ] Implement drag-and-drop for character components using Flame.
--   [ ] Write the core combination logic to check recipes.
+-   [☑️] Setup Flutter project with Flame and Riverpod.
+-   [☑️] Implement data loading from `characters.json` and `recipes.json`.
+-   [☑️] Create the basic game screen with an inventory panel and a fusion area.
+-   [☑️] Implement drag-and-drop for character components using Flame.
+-   [] Write the core combination logic to check recipes.
 -   [ ] Implement local progress saving/loading using `shared_preferences`.
 
 ### ⬜ Milestone 2: UI/UX & Polish

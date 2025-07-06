@@ -62,7 +62,7 @@
   { "id": 61, "char": "今", "pinyin": "jīn", "meaning": "today/now" },
   { "id": 62, "char": "千", "pinyin": "qiān", "meaning": "thousand" },
   { "id": 63, "char": "舌", "pinyin": "shé", "meaning": "tongue" },
-  { "id": 4, "char": "话", "pinyin": "huà", "meaning": "speech" },
+  { "id": 64, "char": "话", "pinyin": "huà", "meaning": "speech" },
   { "id": 65, "char": "氵", "pinyin": "shuǐ", "meaning": "water radical" },
   { "id": 66, "char": "活", "pinyin": "huó", "meaning": "live" },
   { "id": 67, "char": "乱", "pinyin": "luàn", "meaning": "chaotic" },

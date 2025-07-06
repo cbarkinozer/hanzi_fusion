@@ -1,16 +1,20 @@
 // FILE: lib/game/components/character_component.dart
 
-import 'package:flame/collisions.dart'; // Import this
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
+import 'package:hanzi_fusion/game/hanzi_fusion_game.dart';
 
 // Add the CollisionCallbacks mixin
 class CharacterComponent extends PositionComponent
-    with DragCallbacks, CollisionCallbacks {
+    with DragCallbacks, CollisionCallbacks, HasGameReference<HanziFusionGame> {
   final GameCharacter character;
   final VoidCallback? onComponentRemoved;
+  
+  // A flag to prevent multiple fusion checks for the same collision event.
+  bool isBeingFused = false;
 
   CharacterComponent({
     required this.character,
@@ -32,7 +36,7 @@ class CharacterComponent extends PositionComponent
   Future<void> onLoad() async {
     // Add a hitbox to this component.
     add(RectangleHitbox());
-    
+
     add(
       RectangleComponent(
         size: size,
@@ -57,5 +61,30 @@ class CharacterComponent extends PositionComponent
   @override
   void onDragUpdate(DragUpdateEvent event) {
     position += event.localDelta;
+  }
+
+  @override
+  void onDragEnd(DragEndEvent event) {
+    super.onDragEnd(event);
+    // After dragging stops, reset the flag so it can fuse again.
+    isBeingFused = false;
+  }
+
+  @override
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollisionStart(intersectionPoints, other);
+    
+    if (isDragged) return; // Don't try to fuse while the user is actively dragging this component.
+
+    if (other is CharacterComponent) {
+      // To avoid both components trying to initiate a fusion, we ensure only one does.
+      if (isBeingFused || other.isBeingFused) return;
+      isBeingFused = true;
+      other.isBeingFused = true;
+
+      // Find the game instance and call the fusion-checking method
+      game.checkForFusion(this, other);
+    }
   }
 }
