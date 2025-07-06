@@ -7,7 +7,7 @@ part of 'game_data_repository.dart';
 // **************************************************************************
 
 String _$gameDataRepositoryHash() =>
-    r'f18686995d5933538523ad586842e98e10e12215';
+    r'47eda4e252884ea9c02bf9c4236b3dffa8a94ab6';
 
 /// See also [gameDataRepository].
 @ProviderFor(gameDataRepository)

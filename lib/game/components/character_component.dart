@@ -7,19 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
 import 'package:hanzi_fusion/game/hanzi_fusion_game.dart';
 
-// Add the CollisionCallbacks mixin
 class CharacterComponent extends PositionComponent
-    with DragCallbacks, CollisionCallbacks, HasGameReference<HanziFusionGame> {
+    with DragCallbacks, CollisionCallbacks, HasGameRef<HanziFusionGame> {
   final GameCharacter character;
-  final VoidCallback? onComponentRemoved;
-  
-  // A flag to prevent multiple fusion checks for the same collision event.
-  bool isBeingFused = false;
 
   CharacterComponent({
     required this.character,
     required Vector2 position,
-    this.onComponentRemoved,
   }) : super(
           position: position,
           size: Vector2.all(80),
@@ -27,16 +21,8 @@ class CharacterComponent extends PositionComponent
         );
 
   @override
-  void onRemove() {
-    super.onRemove();
-    onComponentRemoved?.call();
-  }
-
-  @override
   Future<void> onLoad() async {
-    // Add a hitbox to this component.
     add(RectangleHitbox());
-
     add(
       RectangleComponent(
         size: size,
@@ -66,25 +52,26 @@ class CharacterComponent extends PositionComponent
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    // After dragging stops, reset the flag so it can fuse again.
-    isBeingFused = false;
+    // When the drag ends, ask the game to handle a potential fusion.
+    game.handleFusion(this);
   }
 
   @override
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
-    
-    if (isDragged) return; // Don't try to fuse while the user is actively dragging this component.
-
     if (other is CharacterComponent) {
-      // To avoid both components trying to initiate a fusion, we ensure only one does.
-      if (isBeingFused || other.isBeingFused) return;
-      isBeingFused = true;
-      other.isBeingFused = true;
+      // When we collide, we tell the game who we are colliding with.
+      game.latestCollisionTarget = other;
+    }
+  }
 
-      // Find the game instance and call the fusion-checking method
-      game.checkForFusion(this, other);
+  @override
+  void onCollisionEnd(PositionComponent other) {
+    super.onCollisionEnd(other);
+    if (other is CharacterComponent) {
+      // When we stop colliding, we clear the target.
+      game.latestCollisionTarget = null;
     }
   }
 }

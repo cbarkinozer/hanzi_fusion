@@ -196,5 +196,12 @@
   { "id": 195, "char": "车", "pinyin": "chē", "meaning": "vehicle" },
   { "id": 196, "char": "山", "pinyin": "shān", "meaning": "mountain" },
   { "id": 197, "char": "林", "pinyin": "lín", "meaning": "woods" },
-  { "id": 198, "char": "森", "pinyin": "sēn", "meaning": "forest" }
+  { "id": 198, "char": "森", "pinyin": "sēn", "meaning": "forest" },
+  { "id": 199, "char": "射", "pinyin": "shè", "meaning": "shoot, emit" },
+  { "id": 200, "char": "火", "pinyin": "huǒ", "meaning": "fire" },
+  { "id": 201, "char": "出", "pinyin": "chū", "meaning": "exit" },
+  { "id": 202, "char": "开", "pinyin": "kāi", "meaning": "open" },
+  { "id": 203, "char": "果", "pinyin": "guǒ", "meaning": "fruit" },
+  { "id": 204, "char": "田", "pinyin": "tián", "meaning": "field" },
+  { "id": 205, "char": "艹", "pinyin": "cǎo", "meaning": "grass radical" }
 ]

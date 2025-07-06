@@ -191,29 +191,47 @@ An array defining all valid combinations using character IDs for efficiency.
 
 The project is broken down into four key milestones.
 
+## 🗺️ Development Roadmap
+
+The project is broken down into four key milestones.
+
 ### ☑️ Milestone 1: Core Engine (MVP)
 
--   [☑️] Setup Flutter project with Flame and Riverpod.
--   [☑️] Implement data loading from `characters.json` and `recipes.json`.
--   [☑️] Create the basic game screen with an inventory panel and a fusion area.
--   [☑️] Implement drag-and-drop for character components using Flame.
--   [] Write the core combination logic to check recipes.
--   [ ] Implement local progress saving/loading using `shared_preferences`.
+The basic gameplay loop is functional. Players can discover new characters by combining existing ones, and progress is saved locally.
+
+-   [x] Setup Flutter project with Flame and Riverpod.
+-   [x] Implement data loading from `characters.json` and `recipes.json`.
+-   [x] Create the basic game screen with an inventory panel and a fusion area.
+-   [x] Implement drag-and-drop for character components using Flame.
+-   [x] Write the core combination logic to check recipes on drag-and-drop.
+-   [x] Implement local progress saving/loading using `shared_preferences`.
 
 ### ⬜ Milestone 2: UI/UX & Polish
 
--   [ ] Design and implement a clean UI for all screens.
--   [ ] Add satisfying animations for successful and failed fusions.
--   [ ] Integrate sound effects for key game events.
--   [ ] Build the "Discovery Book" screen to browse unlocked characters.
--   [ ] Add pinyin and meaning details to the Discovery Book.
+This milestone focuses on creating a polished and satisfying user experience with clear feedback and a way to view discoveries.
+
+-   [ ] **Design and implement a clean UI for all screens.**
+-   [ ] **Add satisfying animations** for successful (e.g., particle burst) and failed (e.g., shake) fusions.
+-   [ ] **Integrate sound effects** for key game events (fusion, failure, UI clicks).
+-   [ ] **Build the "Discovery Book" screen** to browse all characters, showing locked and unlocked states.
+-   [ ] **Implement the Character Info Page/Dialog** that shows:
+    -   Pinyin and English meaning.
+    -   A "play pronunciation" button.
+    -   An animated GIF of the stroke order.
+-   [ ] Add a main menu or settings button to the game screen to navigate to the Discovery Book.
 
 ### ⬜ Milestone 3: Content & Gameplay Expansion
 
--   [ ] Expand the `characters.json` and `recipes.json` to 100+ discoveries.
+This milestone focuses on deepening the educational content and expanding the gameplay.
+
+-   [ ] **Expand `characters.json` with etymological data:**
+    -   Add fields for semantic/phonetic components.
+    -   Add URLs or asset paths for stroke order GIFs and pronunciation audio.
+-   [ ] **Implement phono-semantic highlighting** on the Character Info Page (e.g., coloring components gold for semantic, red for phonetic).
+-   [ ] **Expand character and recipe data** to over 100+ discoveries.
 -   [ ] Balance the discovery path to ensure smooth progression.
 -   [ ] Implement a simple hint system.
--   [ ] Add a settings screen (e.g., for sound volume).
+-   [ ] Add a settings screen (e.g., for sound volume, resetting progress).
 
 ### ⬜ Milestone 4: Deployment & Advanced Features
 

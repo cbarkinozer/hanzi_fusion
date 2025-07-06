@@ -14,22 +14,22 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
   final WidgetRef ref;
   HanziFusionGame({required this.ref});
 
+  // A list to keep track of components colliding with the one being dragged
+  CharacterComponent? latestCollisionTarget;
+
   @override
   Color backgroundColor() => const Color(0xFF202020);
 
   @override
   Future<void> onLoad() async {
-    // Debug mode is great for seeing hitboxes.
     debugMode = true;
-
-    // TODO: Pre-load your audio files here for better performance
-    // await FlameAudio.audioCache.loadAll(['success.wav', 'fail.wav']);
+    // TODO: Pre-load your audio files
+    // await FlameAudio.audioCache.loadAll(['success.wav', 'fail.wav', 'pop.wav']);
   }
 
   /// This is a public method for the UI to call.
   /// It takes a screen position (Offset) and handles the conversion.
   void addCharacterFromDrop(GameCharacter character, Offset screenPosition) {
-    // Check if a component with this character ID already exists on the canvas
     final alreadyExists = world.children
         .whereType<CharacterComponent>()
         .any((component) => component.character.id == character.id);
@@ -39,32 +39,41 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
       print("Character already on screen!");
       return;
     }
-
+    
     // Convert the screen tap position to the game's world position
     final worldPosition =
         camera.globalToLocal(Vector2(screenPosition.dx, screenPosition.dy));
+    _spawnCharacter(character, worldPosition);
+  }
 
-    // Create and add the component to the game world
+  /// Private method to spawn a character at a specific world position.
+  void _spawnCharacter(GameCharacter character, Vector2 position) {
     final component = CharacterComponent(
       character: character,
-      position: worldPosition,
+      position: position,
     );
     world.add(component);
   }
 
-  /// Checks if two characters can be fused and handles the result.
-  void checkForFusion(CharacterComponent first, CharacterComponent second) {
+  /// Handles the fusion logic when a drag gesture ends.
+  void handleFusion(CharacterComponent droppedComponent) {
+    if (latestCollisionTarget == null) {
+      // TODO: Add a "shake" or "bump" animation for a failed drop.
+      return; // Not dropped on anything
+    }
+
     final gameData = ref.read(gameDataRepositoryProvider).value;
-    if (gameData == null) return; // Data not loaded yet
+    if (gameData == null) return;
 
-    // Create a sorted list of the input IDs to match the recipe format
-    final inputIds = [first.character.id, second.character.id]..sort();
+    final inputIds = [
+      droppedComponent.character.id,
+      latestCollisionTarget!.character.id
+    ]..sort();
 
-    // Find a matching recipe
     final recipe = gameData.recipes.cast<Recipe?>().firstWhere(
           (r) =>
               r != null &&
-              r.inputIds.length == 2 && // Ensure it's a 2-ingredient recipe
+              r.inputIds.length == 2 &&
               r.inputIds[0] == inputIds[0] &&
               r.inputIds[1] == inputIds[1],
           orElse: () => null,
@@ -72,34 +81,31 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
 
     if (recipe != null) {
       // FUSION SUCCESS!
-      final outputCharacter = gameData.characterMap[recipe.outputId];
+      final outputCharacter = gameData.characterMapById[recipe.outputId];
       if (outputCharacter != null) {
-        // 1. Calculate the position for the new character (midpoint of the two)
-        final fusionPosition = (first.position + second.position) / 2;
+        final fusionPosition = latestCollisionTarget!.position;
 
-        // 2. Remove the two input characters
-        world.remove(first);
-        world.remove(second);
+        world.remove(droppedComponent);
+        world.remove(latestCollisionTarget!);
 
-        // 3. Add the new character component to the game
-        // We convert the world position back to an offset for the existing method
-        addCharacterFromDrop(
-            outputCharacter, fusionPosition.toOffset());
+        _spawnCharacter(outputCharacter, fusionPosition);
 
-        // 4. Update the player's progress
         ref
             .read(playerProgressProvider.notifier)
             .addNewCharacter(outputCharacter.id);
-            
-        FlameAudio.play('success.wav');
 
+        // TODO: Play a success sound effect
+        FlameAudio.play('success.wav');
         // TODO: Add a success particle effect at fusionPosition
       }
     } else {
       // FUSION FAILED
+      // TODO: Play a failure sound effect
       FlameAudio.play('fail.wav');
-      
-      // TODO: Add a "shake" or "bump" animation to the components to show a failed attempt
+      // TODO: Add a "shake" or "bump" animation to the components
     }
+
+    // Reset collision target
+    latestCollisionTarget = null;
   }
 }

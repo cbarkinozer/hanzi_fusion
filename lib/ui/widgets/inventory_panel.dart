@@ -19,7 +19,7 @@ class InventoryPanel extends ConsumerWidget {
     }
 
     final discoveredCharacters = discoveredIds
-        .map((id) => gameData.characterMap[id])
+        .map((id) => gameData.characterMapById[id])
         .where((char) => char != null)
         .toList();
 
