@@ -5,12 +5,38 @@
 **A captivating mobile game where you combine Chinese characters to discover new ones, inspired by classics like *Little Alchemy* and *Infinite Craft*. Built with Flutter and Flame.**
 
 Fundamental char numbers that will be learned at Intro (HSK0):
-131, 27, 94, 732, 308
 
 [
-  "一", "二", "丨", "十", "干", "丷", "半", "丿", "㇏", "人",
-  "亻", "从", "个", "入", "什", "𠂉", "午", "年", "ㄱ", "口",
-  "中", "丩", "叫", "八", "只", "介", "乚", "儿", "四", "兄",
+  131:"一",
+  27:"二",
+  94:"丨",
+  732:"十",
+  308:"干",
+  "丷",
+  "半",
+  "丿",
+  "㇏",
+  "人",
+  "亻",
+  "从",
+  "个",
+  "入",
+  "什",
+  "𠂉",
+  "午",
+  "年",
+  "ㄱ",
+  "口",
+  "中",
+  "丩",
+  "叫",
+  "八",
+  "只",
+  "介",
+  "乚",
+  "儿",
+  "四",
+  "兄",
   "兑", "讠", "说", "计", "认", "识", "㇉", "马", "吗", "骂",
   "乙", "乞", "吃", "气", "冫", "飞", "况", "日", "旧", "旦",
   "但", "早", "唱", "电", "七", "化", "丶", "白", "百", "㇇",
@@ -24,7 +50,9 @@ Fundamental char numbers that will be learned at Intro (HSK0):
   "桌", "相", "禾", "和", "种", "香", "几", "机", "心", "忄",
   "想", "息", "总", "怕", "匚", "己"
 ]
-For remaining recipes write a script that will divide to 2 chars if 4 divide to 2 by 2 chars. Single ones will be stored different at will asked to LLM. Triplets will be divided from 2 to 1.
+
+Not every character exist as an output in the recipe and they must be literals that cant be divided or should be added.
+We might give the fundamental literals at the beginning. Later we need to give the above characters to teach the system. Later we can continue with the remaining characters.
 
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
 [![Status](https://img.shields.io/badge/status-in%20development-orange)](https://github.com/cbarkinozer/hanzi_fusion)
