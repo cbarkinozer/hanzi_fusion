@@ -1,4 +1,4 @@
-// FILE: lib/game/hanzi_fusion_game.dart
+// lib/game/hanzi_fusion_game.dart
 
 import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hanzi_fusion/data/game_data_repository.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
-import 'package:hanzi_fusion/data/models/recipe_model.dart';
 import 'package:hanzi_fusion/game/components/character_component.dart';
 import 'package:hanzi_fusion/providers/player_progress_provider.dart';
 
@@ -14,7 +13,6 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
   final WidgetRef ref;
   HanziFusionGame({required this.ref});
 
-  // A list to keep track of components colliding with the one being dragged
   CharacterComponent? latestCollisionTarget;
 
   @override
@@ -23,30 +21,25 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     debugMode = true;
-    // TODO: Pre-load your audio files
-    // await FlameAudio.audioCache.loadAll(['success.wav', 'fail.wav', 'pop.wav']);
+    // Pre-load audio files for better performance
+    await FlameAudio.audioCache.loadAll(['success.mp3', 'fail.mp3']);
   }
 
-  /// This is a public method for the UI to call.
-  /// It takes a screen position (Offset) and handles the conversion.
   void addCharacterFromDrop(GameCharacter character, Offset screenPosition) {
     final alreadyExists = world.children
         .whereType<CharacterComponent>()
         .any((component) => component.character.id == character.id);
 
     if (alreadyExists) {
-      // TODO: Play a "cannot add" sound or show a small visual cue.
-      print("Character already on screen!");
+      // Character already on screen!
       return;
     }
     
-    // Convert the screen tap position to the game's world position
     final worldPosition =
         camera.globalToLocal(Vector2(screenPosition.dx, screenPosition.dy));
     _spawnCharacter(character, worldPosition);
   }
 
-  /// Private method to spawn a character at a specific world position.
   void _spawnCharacter(GameCharacter character, Vector2 position) {
     final component = CharacterComponent(
       character: character,
@@ -55,29 +48,21 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
     world.add(component);
   }
 
-  /// Handles the fusion logic when a drag gesture ends.
   void handleFusion(CharacterComponent droppedComponent) {
     if (latestCollisionTarget == null) {
-      // TODO: Add a "shake" or "bump" animation for a failed drop.
       return; // Not dropped on anything
     }
 
     final gameData = ref.read(gameDataRepositoryProvider).value;
     if (gameData == null) return;
 
-    final inputIds = [
+    final sortedIds = [
       droppedComponent.character.id,
       latestCollisionTarget!.character.id
     ]..sort();
 
-    final recipe = gameData.recipes.cast<Recipe?>().firstWhere(
-          (r) =>
-              r != null &&
-              r.inputIds.length == 2 &&
-              r.inputIds[0] == inputIds[0] &&
-              r.inputIds[1] == inputIds[1],
-          orElse: () => null,
-        );
+    final recipeKey = "${sortedIds[0]}-${sortedIds[1]}";
+    final recipe = gameData.recipeMapByKey[recipeKey];
 
     if (recipe != null) {
       // FUSION SUCCESS!
@@ -90,22 +75,18 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
 
         _spawnCharacter(outputCharacter, fusionPosition);
 
+        // Call the updated provider method with both the new character and the recipe key
         ref
             .read(playerProgressProvider.notifier)
-            .addNewCharacter(outputCharacter.id);
+            .addNewDiscovery(outputCharacter.id, recipeKey);
 
-        // TODO: Play a success sound effect
-        FlameAudio.play('success.wav');
-        // TODO: Add a success particle effect at fusionPosition
+        FlameAudio.play('success.mp3', volume: 0.5);
       }
     } else {
       // FUSION FAILED
-      // TODO: Play a failure sound effect
-      FlameAudio.play('fail.wav');
-      // TODO: Add a "shake" or "bump" animation to the components
+      FlameAudio.play('fail.mp3', volume: 0.5);
     }
 
-    // Reset collision target
     latestCollisionTarget = null;
   }
 }

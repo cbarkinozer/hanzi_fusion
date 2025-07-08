@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hanzi_fusion/data/models/character_model.dart'; // Import model
+import 'package:hanzi_fusion/data/models/character_model.dart';
 import 'package:hanzi_fusion/data/game_data_repository.dart';
 import 'package:hanzi_fusion/providers/player_progress_provider.dart';
 
@@ -12,16 +12,23 @@ class InventoryPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final gameData = ref.watch(gameDataRepositoryProvider).valueOrNull;
-    final discoveredIds = ref.watch(playerProgressProvider).valueOrNull;
+    // 'progress' is now a PlayerProgressData object, or null
+    final progress = ref.watch(playerProgressProvider).valueOrNull;
 
-    if (gameData == null || discoveredIds == null) {
+    if (gameData == null || progress == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final discoveredCharacters = discoveredIds
+    // --- FIX IS HERE ---
+    // We now access the `discoveredCharacterIds` property from the `progress` object
+    final discoveredCharacters = progress.discoveredCharacterIds
         .map((id) => gameData.characterMapById[id])
         .where((char) => char != null)
         .toList();
+    // --- END OF FIX ---
+
+    // Sort characters by their ID for a consistent order
+    discoveredCharacters.sort((a, b) => a!.id.compareTo(b!.id));
 
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -42,7 +49,6 @@ class InventoryPanel extends ConsumerWidget {
         itemBuilder: (context, index) {
           final character = discoveredCharacters[index]!;
           
-          // The character tile in the inventory.
           final characterTile = Card(
             child: Center(
               child: Text(
@@ -52,11 +58,8 @@ class InventoryPanel extends ConsumerWidget {
             ),
           );
 
-          // Wrap the tile in a Draggable widget.
-          // The generic type <GameCharacter> is important!
           return Draggable<GameCharacter>(
             data: character,
-            // This is the widget that appears under the user's finger during drag.
             feedback: SizedBox(
               width: 80,
               height: 80,

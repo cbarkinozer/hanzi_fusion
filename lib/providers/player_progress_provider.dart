@@ -1,3 +1,7 @@
+// lib/providers/player_progress_provider.dart
+import 'dart:convert';
+
+import 'package:hanzi_fusion/data/models/player_progress_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,46 +10,56 @@ part 'player_progress_provider.g.dart';
 @riverpod
 class PlayerProgress extends _$PlayerProgress {
   late SharedPreferences _prefs;
+  static const _progressKey = 'playerProgressData';
 
-  // Define the starting character IDs.
-  // Let's start with person (10), wood (123), and water (194).
-  final _initialCharacterIds = [10, 123, 194];
+  // A sensible set of starting primitive characters.
+  final _initialCharacterIds = {131, 94, 442, 85, 5206, 99, 784, 87, 137};
 
   @override
-  Future<Set<int>> build() async {
+  Future<PlayerProgressData> build() async {
+    // Keep the provider alive across screen changes.
+    ref.keepAlive(); 
     _prefs = await SharedPreferences.getInstance();
-    final discoveredIds = _prefs.getStringList('discoveredCharacterIds');
 
-    if (discoveredIds == null) {
+    final savedJsonString = _prefs.getString(_progressKey);
+
+    if (savedJsonString == null) {
       // If no saved data, start with the initial set.
-      return _initialCharacterIds.toSet();
+      return PlayerProgressData(
+        discoveredCharacterIds: _initialCharacterIds,
+        discoveredRecipeKeys: {},
+      );
     }
 
     // Otherwise, load the saved data.
-    return discoveredIds.map(int.parse).toSet();
+    return PlayerProgressData.fromJson(json.decode(savedJsonString));
   }
 
-  Future<void> addNewCharacter(int newId) async {
-    // Get the current state
-    final currentState = state.valueOrNull ?? <int>{};
+  Future<void> addNewDiscovery(int newCharId, String recipeKey) async {
+    final currentState = state.valueOrNull;
+    if (currentState == null) return;
     
-    // Add the new ID
-    final newState = {...currentState, newId};
+    // Create the new state with added discoveries.
+    final newState = currentState.copyWith(
+      discoveredCharacterIds: {...currentState.discoveredCharacterIds, newCharId},
+      discoveredRecipeKeys: {...currentState.discoveredRecipeKeys, recipeKey}
+    );
 
-    // Update the state to notify listeners
+    // Update the state to notify listeners.
     state = AsyncData(newState);
 
-    // Persist the new state to local storage
-    await _prefs.setStringList(
-      'discoveredCharacterIds',
-      newState.map((id) => id.toString()).toList(),
-    );
+    // Persist the new state to local storage.
+    await _prefs.setString(_progressKey, json.encode(newState.toJson()));
   }
 
   Future<void> resetProgress() async {
-    // Update state to initial characters
-    state = AsyncData(_initialCharacterIds.toSet());
+    final initialState = PlayerProgressData(
+      discoveredCharacterIds: _initialCharacterIds,
+      discoveredRecipeKeys: {},
+    );
+    // Update state to initial data
+    state = AsyncData(initialState);
     // Clear from storage
-    await _prefs.remove('discoveredCharacterIds');
+    await _prefs.remove(_progressKey);
   }
 }
