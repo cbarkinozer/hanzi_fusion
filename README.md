@@ -342,9 +342,9 @@ An array defining all valid combinations. It uses the actual characters as input
 
 The project is broken down into key milestones. `☑️` = Done, `🚧` = In Progress, `⬜` = To-Do.
 
-### ☑️ Milestone 1: Core Engine (MVP)
+### ☑️ Milestone 1: Core Engine & UI Foundation
 
-The basic gameplay loop is functional. Players can discover new characters by combining existing ones, and progress is saved locally.
+The basic gameplay loop and navigation are functional. Players can discover new characters, progress is saved locally, and they can browse their discoveries.
 
 -   [x] Setup Flutter project with Flame and Riverpod.
 -   [x] Implement data loading from `characters.json` and `recipes.json`.
@@ -352,28 +352,29 @@ The basic gameplay loop is functional. Players can discover new characters by co
 -   [x] Implement drag-and-drop for character components using Flame.
 -   [x] Write the core combination logic to check recipes on drag-and-drop.
 -   [x] Implement local progress saving/loading using `shared_preferences`.
+-   [x] Create the "Characters" and "Recipes" discovery pages.
+-   [x] Implement an HSK-based level system for progression.
 
-### ⬜ Milestone 2: UI/UX & Polish
+### 🚧 Milestone 2: UI/UX & Polish
 
 This milestone focuses on creating a polished and satisfying user experience.
 
--   [ ] **Design and implement a clean UI for all screens.**
--   [ ] **Add satisfying animations** for successful (e.g., particle burst) and failed (e.g., shake) fusions.
--   [🚧] **Integrate sound effects** for key game events (fusion, failure, UI clicks).
--   [ ] **Build the "Discovery Book" screen** to browse all characters, showing locked and unlocked states.
--   [ ] **Implement the Character Info Page/Dialog** that shows details and stroke order.
--   [ ] Add a main menu or settings button to the game screen.
+-   [🚧] **Integrate sound effects** for key events (drag start, fusion success/fail, UI clicks, level up).
+-   [⬜] **Add satisfying animations** for successful (e.g., particle burst) and failed (e.g., shake) fusions.
+-   [⬜] **Implement the New Discovery Popup** showing `A + B = C` with an animation.
+-   [⬜] **Implement Dynamic Theming:** Change the app's color scheme based on the current HSK level.
+-   [⬜] **Build the Settings Screen** with options for sound, music, and resetting progress.
+-   [⬜] Add a main menu or settings button to the game screen.
 
-### 🚧 Milestone 3: Content & Gameplay Expansion
+### ⬜ Milestone 3: Content & Gameplay Expansion
 
 This milestone focuses on deepening the educational content and expanding the gameplay.
 
--   [ ] **Expand `characters.json` with etymological data** (e.g., components, audio URLs).
--   [ ] **Implement phono-semantic highlighting** on the Character Info Page.
--   [🚧] **Expand character and recipe data** to over 200+ discoveries.
--   [ ] Balance the discovery path to ensure smooth progression.
--   [ ] Implement a simple hint system.
--   [ ] Add a settings screen (e.g., for sound volume, resetting progress).
+-   [x] **Expand character and recipe data** to over 200+ discoveries.
+-   [⬜] **Integrate on-device Text-to-Speech** for pinyin pronunciation on the Character page and Discovery Popup.
+-   [⬜] **Implement a Hint System** based on a combination of time and unique failed attempts.
+-   [⬜] **Balance the discovery path** to ensure smooth progression and avoid getting stuck.
+-   [⬜] **Expand `characters.json` with etymological data** for a richer "Discovery Book" experience.
 
 ### ⬜ Milestone 4: Deployment & Advanced Features
 

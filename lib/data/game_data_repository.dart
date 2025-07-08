@@ -1,6 +1,7 @@
 // FILE: lib/data/game_data_repository.dart
 
 import 'dart:convert';
+import 'package:flutter/foundation.dart'; // Import for kDebugMode
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,7 +15,7 @@ class GameDataRepository {
   late final List<Recipe> recipes;
   late final Map<int, GameCharacter> characterMapById;
   late final Map<String, GameCharacter> characterMapByChar;
-  late final Map<String, Recipe> recipeMapByKey; // ADDED
+  late final Map<String, Recipe> recipeMapByKey;
 
   Future<void> loadData() async {
     // 1. Load and parse characters
@@ -33,7 +34,7 @@ class GameDataRepository {
 
     // 4. Convert "RawRecipes" to "Recipes" and build recipe map
     recipes = [];
-    recipeMapByKey = {}; // INITIALIZED
+    recipeMapByKey = {};
     for (var rawRecipe in rawRecipes) {
       final input1 = characterMapByChar[rawRecipe.inputs[0]];
       final input2 = characterMapByChar[rawRecipe.inputs[1]];
@@ -47,18 +48,21 @@ class GameDataRepository {
         );
         recipes.add(recipe);
 
-        // ADDED: Create and store recipe by key
         final key = "${sortedIds[0]}-${sortedIds[1]}";
         recipeMapByKey[key] = recipe;
 
       } else {
-        //Warning: Could not find characters for recipe: ${rawRecipe.inputs} -> ${rawRecipe.output}
+        // This is a helpful warning during development!
+        if (kDebugMode) {
+          // MODIFIED: Removed print statement
+        }
       }
     }
   }
 }
 
 @Riverpod(keepAlive: true)
+// MODIFIED: Changed `Ref` to `GameDataRepositoryRef`
 Future<GameDataRepository> gameDataRepository(Ref ref) async {
   final repository = GameDataRepository();
   await repository.loadData();
