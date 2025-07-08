@@ -9,7 +9,6 @@ import 'package:hanzi_fusion/data/hsk_data.dart';
 part 'level_provider.g.dart';
 
 @riverpod
-// MODIFIED: Replaced 'LevelsRef' with the standard 'Ref'
 List<Level> levels(Ref ref) {
   final gameData = ref.watch(gameDataRepositoryProvider).value;
   if (gameData == null) return [];

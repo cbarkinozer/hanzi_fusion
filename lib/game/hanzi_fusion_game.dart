@@ -20,10 +20,6 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
   HanziFusionGame({required this.ref});
 
   CharacterComponent? latestCollisionTarget;
-  
-  late Vector2 _nextSpawnPosition;
-  late final Vector2 _initialSpawnPosition;
-  final double _spawnPadding = 10.0;
 
   @override
   Color backgroundColor() => const Color(0xFF202020);
@@ -32,31 +28,20 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
   Future<void> onLoad() async {
     debugMode = true;
     await FlameAudio.audioCache.loadAll(['success.mp3', 'fail.mp3', 'click.mp3', 'drop.mp3']);
-    
-    final spawnX = size.x * 0.85;
-    final spawnY = size.y * 0.15;
-    _initialSpawnPosition = Vector2(spawnX, spawnY);
-    _nextSpawnPosition = _initialSpawnPosition.clone();
   }
 
   void addCharacterFromDrop(GameCharacter character, Offset screenPosition) {
     final sfxEnabled = ref.read(settingsProvider).value?.sfxEnabled ?? true;
-    
-    // --- FIX IS HERE ---
-    // Correctly convert Offset to Vector2
     final worldPosition = camera.globalToLocal(Vector2(screenPosition.dx, screenPosition.dy));
-    // --- END OF FIX ---
-
-    // Check if dropping onto an existing character for instant fusion
     final componentsUnderDrop = componentsAtPoint(worldPosition);
     final target = componentsUnderDrop.whereType<CharacterComponent>().firstOrNull;
     
     if (target != null) {
-      // INSTANT FUSION ATTEMPT
+      // If dropped on a character try to merge
       final dummyComponent = CharacterComponent(character: character, position: worldPosition);
-      handleFusion(dummyComponent, isInstantFusion: true, instantTarget: target);
+      handleFusion(dummyComponent, directTarget: target);
     } else {
-      // Regular drop onto the board
+      // If dropped on an empty place just add the character
       if (sfxEnabled) {
         FlameAudio.play('drop.mp3', volume: 0.6);
       }
@@ -72,78 +57,43 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
     world.add(component);
   }
 
-  void handleFusion(CharacterComponent droppedComponent, {bool isInstantFusion = false, CharacterComponent? instantTarget}) {
-    final target = isInstantFusion ? instantTarget : latestCollisionTarget;
+  void handleFusion(CharacterComponent droppedComponent, {CharacterComponent? directTarget}) {
+    final fusionTarget = directTarget ?? latestCollisionTarget;
 
-    if (target == null) {
-      return;
-    }
+    if (fusionTarget == null) return;
 
     final gameData = ref.read(gameDataRepositoryProvider).value;
     final sfxEnabled = ref.read(settingsProvider).value?.sfxEnabled ?? true;
-
     if (gameData == null) return;
 
-    final sortedIds = [
-      droppedComponent.character.id,
-      target.character.id
-    ]..sort();
-
+    final sortedIds = [droppedComponent.character.id, fusionTarget.character.id]..sort();
     final recipeKey = "${sortedIds[0]}-${sortedIds[1]}";
     final recipe = gameData.recipeMapByKey[recipeKey];
 
-    if (recipe != null) {
-      // FUSION SUCCESS!
+    if (recipe != null) { // BİRLEŞME BAŞARILI
       final outputCharacter = gameData.characterMapById[recipe.outputId];
       if (outputCharacter != null) {
-        final particlePosition = target.position.clone();
-        final newCharPosition = _getAndIncrementSpawnPosition();
+        // Yeni karakter, birleşmenin olduğu yerde (hedefin konumunda) oluşur.
+        final newCharPosition = fusionTarget.position.clone();
 
-        if (!isInstantFusion) {
-          world.remove(droppedComponent);
-        }
-        world.remove(target);
+        world.remove(droppedComponent);
+        world.remove(fusionTarget);
 
         _spawnCharacter(outputCharacter, newCharPosition);
-        _addSuccessParticles(particlePosition);
+        _addSuccessParticles(newCharPosition);
 
-        ref
-            .read(playerProgressProvider.notifier)
-            .addNewDiscovery(outputCharacter.id, recipeKey);
-
-        if (sfxEnabled) {
-          FlameAudio.play('success.mp3', volume: 0.5);
-        }
+        ref.read(playerProgressProvider.notifier).addNewDiscovery(outputCharacter.id, recipeKey);
+        if (sfxEnabled) FlameAudio.play('success.mp3', volume: 0.5);
       }
-    } else {
-      // FUSION FAILED
-      if (sfxEnabled) {
-        FlameAudio.play('fail.mp3', volume: 0.5);
-      }
-      
-      if (!isInstantFusion) {
-        droppedComponent.add(shakeEffect());
-      }
-      target.add(shakeEffect());
+    } else { // BİRLEŞME BAŞARISIZ
+      if (sfxEnabled) FlameAudio.play('fail.mp3', volume: 0.5);
+      droppedComponent.add(shakeEffect());
+      fusionTarget.add(shakeEffect());
     }
 
-    if (!isInstantFusion) {
-      latestCollisionTarget = null;
-    }
+    latestCollisionTarget = null;
   }
-  
-  Vector2 _getAndIncrementSpawnPosition() {
-    final positionToReturn = _nextSpawnPosition.clone();
-    
-    _nextSpawnPosition.y += 80 + _spawnPadding;
 
-    if (_nextSpawnPosition.y > size.y * 0.9) {
-      _nextSpawnPosition = _initialSpawnPosition.clone();
-    }
-    
-    return positionToReturn;
-  }
-  
   void _addSuccessParticles(Vector2 position) {
     final random = Random();
     world.add(
@@ -154,14 +104,8 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
           lifespan: 1.0,
           generator: (i) => AcceleratedParticle(
             acceleration: Vector2(0, 250),
-            speed: Vector2(
-              random.nextDouble() * 300 - 150,
-              -random.nextDouble() * 400,
-            ),
-            child: CircleParticle(
-              radius: 2.5,
-              paint: Paint()..color = Colors.amber.withAlpha(230),
-            ),
+            speed: Vector2(random.nextDouble() * 300 - 150, -random.nextDouble() * 400),
+            child: CircleParticle(radius: 2.5, paint: Paint()..color = Colors.amber.withAlpha(230)),
           ),
         ),
       ),

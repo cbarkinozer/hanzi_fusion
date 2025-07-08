@@ -5,10 +5,11 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
+import 'package:hanzi_fusion/game/components/hanzi_text_component.dart';
 import 'package:hanzi_fusion/game/hanzi_fusion_game.dart';
 
 class CharacterComponent extends PositionComponent
-    with DragCallbacks, CollisionCallbacks, HasGameReference<HanziFusionGame> {
+    with DragCallbacks, CollisionCallbacks, HasGameRef<HanziFusionGame> {
   final GameCharacter character;
 
   CharacterComponent({
@@ -28,17 +29,8 @@ class CharacterComponent extends PositionComponent
         size: size,
         paint: Paint()..color = const Color(0xFF404040),
         children: [
-          TextComponent(
-            text: character.char,
-            textRenderer: TextPaint(
-              style: const TextStyle(
-                fontSize: 48,
-                color: Colors.white,
-              ),
-            ),
-            anchor: Anchor.center,
-            position: size / 2,
-          ),
+          HanziTextComponent(character.char)
+            ..position = size / 2, // set the position to the middle of the box
         ],
       ),
     );
@@ -52,7 +44,6 @@ class CharacterComponent extends PositionComponent
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    // When the drag ends, ask the game to handle a potential fusion.
     game.handleFusion(this);
   }
 
@@ -61,7 +52,6 @@ class CharacterComponent extends PositionComponent
       Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is CharacterComponent) {
-      // When we collide, we tell the game who we are colliding with.
       game.latestCollisionTarget = other;
     }
   }
@@ -69,9 +59,6 @@ class CharacterComponent extends PositionComponent
   @override
   void onCollisionEnd(PositionComponent other) {
     super.onCollisionEnd(other);
-    if (other is CharacterComponent) {
-      // When we stop colliding, we clear the target.
-      game.latestCollisionTarget = null;
-    }
+    game.latestCollisionTarget = null;
   }
 }

@@ -364,7 +364,7 @@ This milestone focuses on creating a polished and satisfying user experience.
 -   [⬜] **Implement the New Discovery Popup** showing `A + B = C` with an animation.
 -   [⬜] **Implement Dynamic Theming:** Change the app's color scheme based on the current HSK level.
 -   [⬜] **Build the Settings Screen** with options for sound, music, and resetting progress.
--   [⬜] Add a main menu or settings button to the game screen.
+-   [⬜] Add settings button to the game screen.
 
 ### ⬜ Milestone 3: Content & Gameplay Expansion
 

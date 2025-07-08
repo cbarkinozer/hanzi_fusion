@@ -54,7 +54,6 @@ class GameDataRepository {
       } else {
         // This is a helpful warning during development!
         if (kDebugMode) {
-          // MODIFIED: Removed print statement
         }
       }
     }
@@ -62,7 +61,6 @@ class GameDataRepository {
 }
 
 @Riverpod(keepAlive: true)
-// MODIFIED: Changed `Ref` to `GameDataRepositoryRef`
 Future<GameDataRepository> gameDataRepository(Ref ref) async {
   final repository = GameDataRepository();
   await repository.loadData();

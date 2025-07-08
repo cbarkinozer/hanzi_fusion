@@ -7,7 +7,8 @@ part 'player_progress_model.g.dart';
 @freezed
 class PlayerProgressData with _$PlayerProgressData {
   const factory PlayerProgressData({
-    required Set<int> discoveredCharacterIds,
+   
+    required List<int> discoveredCharacterIds,
     required Set<String> discoveredRecipeKeys,
   }) = _PlayerProgressData;
 

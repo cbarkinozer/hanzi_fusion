@@ -11,7 +11,7 @@ _$PlayerProgressDataImpl _$$PlayerProgressDataImplFromJson(
     _$PlayerProgressDataImpl(
       discoveredCharacterIds: (json['discoveredCharacterIds'] as List<dynamic>)
           .map((e) => (e as num).toInt())
-          .toSet(),
+          .toList(),
       discoveredRecipeKeys: (json['discoveredRecipeKeys'] as List<dynamic>)
           .map((e) => e as String)
           .toSet(),
@@ -20,6 +20,6 @@ _$PlayerProgressDataImpl _$$PlayerProgressDataImplFromJson(
 Map<String, dynamic> _$$PlayerProgressDataImplToJson(
         _$PlayerProgressDataImpl instance) =>
     <String, dynamic>{
-      'discoveredCharacterIds': instance.discoveredCharacterIds.toList(),
+      'discoveredCharacterIds': instance.discoveredCharacterIds,
       'discoveredRecipeKeys': instance.discoveredRecipeKeys.toList(),
     };

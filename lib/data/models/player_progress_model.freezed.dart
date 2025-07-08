@@ -20,7 +20,8 @@ PlayerProgressData _$PlayerProgressDataFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PlayerProgressData {
-  Set<int> get discoveredCharacterIds => throw _privateConstructorUsedError;
+// DÜZELTME: Envanter sırasını korumak için Set yerine List kullanıyoruz.
+  List<int> get discoveredCharacterIds => throw _privateConstructorUsedError;
   Set<String> get discoveredRecipeKeys => throw _privateConstructorUsedError;
 
   /// Serializes this PlayerProgressData to a JSON map.
@@ -40,7 +41,7 @@ abstract class $PlayerProgressDataCopyWith<$Res> {
       _$PlayerProgressDataCopyWithImpl<$Res, PlayerProgressData>;
   @useResult
   $Res call(
-      {Set<int> discoveredCharacterIds, Set<String> discoveredRecipeKeys});
+      {List<int> discoveredCharacterIds, Set<String> discoveredRecipeKeys});
 }
 
 /// @nodoc
@@ -65,7 +66,7 @@ class _$PlayerProgressDataCopyWithImpl<$Res, $Val extends PlayerProgressData>
       discoveredCharacterIds: null == discoveredCharacterIds
           ? _value.discoveredCharacterIds
           : discoveredCharacterIds // ignore: cast_nullable_to_non_nullable
-              as Set<int>,
+              as List<int>,
       discoveredRecipeKeys: null == discoveredRecipeKeys
           ? _value.discoveredRecipeKeys
           : discoveredRecipeKeys // ignore: cast_nullable_to_non_nullable
@@ -83,7 +84,7 @@ abstract class _$$PlayerProgressDataImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {Set<int> discoveredCharacterIds, Set<String> discoveredRecipeKeys});
+      {List<int> discoveredCharacterIds, Set<String> discoveredRecipeKeys});
 }
 
 /// @nodoc
@@ -106,7 +107,7 @@ class __$$PlayerProgressDataImplCopyWithImpl<$Res>
       discoveredCharacterIds: null == discoveredCharacterIds
           ? _value._discoveredCharacterIds
           : discoveredCharacterIds // ignore: cast_nullable_to_non_nullable
-              as Set<int>,
+              as List<int>,
       discoveredRecipeKeys: null == discoveredRecipeKeys
           ? _value._discoveredRecipeKeys
           : discoveredRecipeKeys // ignore: cast_nullable_to_non_nullable
@@ -119,7 +120,7 @@ class __$$PlayerProgressDataImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PlayerProgressDataImpl implements _PlayerProgressData {
   const _$PlayerProgressDataImpl(
-      {required final Set<int> discoveredCharacterIds,
+      {required final List<int> discoveredCharacterIds,
       required final Set<String> discoveredRecipeKeys})
       : _discoveredCharacterIds = discoveredCharacterIds,
         _discoveredRecipeKeys = discoveredRecipeKeys;
@@ -127,13 +128,15 @@ class _$PlayerProgressDataImpl implements _PlayerProgressData {
   factory _$PlayerProgressDataImpl.fromJson(Map<String, dynamic> json) =>
       _$$PlayerProgressDataImplFromJson(json);
 
-  final Set<int> _discoveredCharacterIds;
+// DÜZELTME: Envanter sırasını korumak için Set yerine List kullanıyoruz.
+  final List<int> _discoveredCharacterIds;
+// DÜZELTME: Envanter sırasını korumak için Set yerine List kullanıyoruz.
   @override
-  Set<int> get discoveredCharacterIds {
-    if (_discoveredCharacterIds is EqualUnmodifiableSetView)
+  List<int> get discoveredCharacterIds {
+    if (_discoveredCharacterIds is EqualUnmodifiableListView)
       return _discoveredCharacterIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(_discoveredCharacterIds);
+    return EqualUnmodifiableListView(_discoveredCharacterIds);
   }
 
   final Set<String> _discoveredRecipeKeys;
@@ -187,15 +190,16 @@ class _$PlayerProgressDataImpl implements _PlayerProgressData {
 
 abstract class _PlayerProgressData implements PlayerProgressData {
   const factory _PlayerProgressData(
-          {required final Set<int> discoveredCharacterIds,
+          {required final List<int> discoveredCharacterIds,
           required final Set<String> discoveredRecipeKeys}) =
       _$PlayerProgressDataImpl;
 
   factory _PlayerProgressData.fromJson(Map<String, dynamic> json) =
       _$PlayerProgressDataImpl.fromJson;
 
+// DÜZELTME: Envanter sırasını korumak için Set yerine List kullanıyoruz.
   @override
-  Set<int> get discoveredCharacterIds;
+  List<int> get discoveredCharacterIds;
   @override
   Set<String> get discoveredRecipeKeys;
 

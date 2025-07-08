@@ -20,12 +20,12 @@ class InventoryPanel extends ConsumerWidget {
       return const Center(child: CircularProgressIndicator());
     }
     
+    // DÜZELTME: progress.discoveredCharacterIds artık bir List olduğu için
+    // karakterler keşif sırasına göre gelecektir.
     final discoveredCharacters = progress.discoveredCharacterIds
         .map((id) => gameData.characterMapById[id])
         .where((char) => char != null)
         .toList();
-    
-    discoveredCharacters.sort((a, b) => a!.id.compareTo(b!.id));
 
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -57,7 +57,6 @@ class InventoryPanel extends ConsumerWidget {
 
           return Draggable<GameCharacter>(
             data: character,
-            // ADDED: Play sound on drag start
             onDragStarted: () {
               final sfxEnabled = ref.read(settingsProvider).value?.sfxEnabled ?? true;
               if (sfxEnabled) {
