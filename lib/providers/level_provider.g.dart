@@ -6,7 +6,7 @@ part of 'level_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$levelsHash() => r'd82cef1c6ade56c26263a4328f68b169fd4824cc';
+String _$levelsHash() => r'cc5612df4aa9cddf9594af922e8145eb5c513e3e';
 
 /// See also [levels].
 @ProviderFor(levels)

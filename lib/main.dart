@@ -1,6 +1,8 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hanzi_fusion/ui/screens/game_screen.dart'; // Import new screen
+import 'package:hanzi_fusion/providers/theme_provider.dart';
+import 'package:hanzi_fusion/ui/screens/game_screen.dart';
 
 void main() {
   // Ensure that Flutter bindings are initialized before running the app.
@@ -8,21 +10,24 @@ void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+// MODIFIED: Converted to a ConsumerWidget to access providers
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the theme provider for color changes
+    final themeColor = ref.watch(appThemeColorProvider);
+
     return MaterialApp(
       title: 'Hanzi Fusion',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2A9D8F),
+          seedColor: themeColor, // Use the dynamic theme color
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
       ),
-      // Set the home to our new GameScreen
       home: const GameScreen(),
     );
   }

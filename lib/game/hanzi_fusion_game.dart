@@ -20,6 +20,10 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
   HanziFusionGame({required this.ref});
 
   CharacterComponent? latestCollisionTarget;
+  
+  late Vector2 _nextSpawnPosition;
+  late final Vector2 _initialSpawnPosition;
+  final double _spawnPadding = 10.0;
 
   @override
   Color backgroundColor() => const Color(0xFF202020);
@@ -27,22 +31,37 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     debugMode = true;
-    // Load all audio files
-    await FlameAudio.audioCache.loadAll(['success.mp3', 'fail.mp3', 'click.mp3']);
+    await FlameAudio.audioCache.loadAll(['success.mp3', 'fail.mp3', 'click.mp3', 'drop.mp3']);
+    
+    final spawnX = size.x * 0.85;
+    final spawnY = size.y * 0.15;
+    _initialSpawnPosition = Vector2(spawnX, spawnY);
+    _nextSpawnPosition = _initialSpawnPosition.clone();
   }
 
   void addCharacterFromDrop(GameCharacter character, Offset screenPosition) {
-    final alreadyExists = world.children
-        .whereType<CharacterComponent>()
-        .any((component) => component.character.id == character.id);
-
-    if (alreadyExists) {
-      return;
-    }
+    final sfxEnabled = ref.read(settingsProvider).value?.sfxEnabled ?? true;
     
-    final worldPosition =
-        camera.globalToLocal(Vector2(screenPosition.dx, screenPosition.dy));
-    _spawnCharacter(character, worldPosition);
+    // --- FIX IS HERE ---
+    // Correctly convert Offset to Vector2
+    final worldPosition = camera.globalToLocal(Vector2(screenPosition.dx, screenPosition.dy));
+    // --- END OF FIX ---
+
+    // Check if dropping onto an existing character for instant fusion
+    final componentsUnderDrop = componentsAtPoint(worldPosition);
+    final target = componentsUnderDrop.whereType<CharacterComponent>().firstOrNull;
+    
+    if (target != null) {
+      // INSTANT FUSION ATTEMPT
+      final dummyComponent = CharacterComponent(character: character, position: worldPosition);
+      handleFusion(dummyComponent, isInstantFusion: true, instantTarget: target);
+    } else {
+      // Regular drop onto the board
+      if (sfxEnabled) {
+        FlameAudio.play('drop.mp3', volume: 0.6);
+      }
+      _spawnCharacter(character, worldPosition);
+    }
   }
 
   void _spawnCharacter(GameCharacter character, Vector2 position) {
@@ -53,8 +72,10 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
     world.add(component);
   }
 
-  void handleFusion(CharacterComponent droppedComponent) {
-    if (latestCollisionTarget == null) {
+  void handleFusion(CharacterComponent droppedComponent, {bool isInstantFusion = false, CharacterComponent? instantTarget}) {
+    final target = isInstantFusion ? instantTarget : latestCollisionTarget;
+
+    if (target == null) {
       return;
     }
 
@@ -65,7 +86,7 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
 
     final sortedIds = [
       droppedComponent.character.id,
-      latestCollisionTarget!.character.id
+      target.character.id
     ]..sort();
 
     final recipeKey = "${sortedIds[0]}-${sortedIds[1]}";
@@ -75,13 +96,16 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
       // FUSION SUCCESS!
       final outputCharacter = gameData.characterMapById[recipe.outputId];
       if (outputCharacter != null) {
-        final fusionPosition = latestCollisionTarget!.position.clone();
+        final particlePosition = target.position.clone();
+        final newCharPosition = _getAndIncrementSpawnPosition();
 
-        world.remove(droppedComponent);
-        world.remove(latestCollisionTarget!);
+        if (!isInstantFusion) {
+          world.remove(droppedComponent);
+        }
+        world.remove(target);
 
-        _spawnCharacter(outputCharacter, fusionPosition);
-        _addSuccessParticles(fusionPosition); // Add particle effect
+        _spawnCharacter(outputCharacter, newCharPosition);
+        _addSuccessParticles(particlePosition);
 
         ref
             .read(playerProgressProvider.notifier)
@@ -96,15 +120,30 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
       if (sfxEnabled) {
         FlameAudio.play('fail.mp3', volume: 0.5);
       }
-      // Add shake effect to both components
-      droppedComponent.add(shakeEffect());
-      latestCollisionTarget?.add(shakeEffect());
+      
+      if (!isInstantFusion) {
+        droppedComponent.add(shakeEffect());
+      }
+      target.add(shakeEffect());
     }
 
-    latestCollisionTarget = null;
+    if (!isInstantFusion) {
+      latestCollisionTarget = null;
+    }
   }
   
-  // Method to create a particle burst on successful fusion
+  Vector2 _getAndIncrementSpawnPosition() {
+    final positionToReturn = _nextSpawnPosition.clone();
+    
+    _nextSpawnPosition.y += 80 + _spawnPadding;
+
+    if (_nextSpawnPosition.y > size.y * 0.9) {
+      _nextSpawnPosition = _initialSpawnPosition.clone();
+    }
+    
+    return positionToReturn;
+  }
+  
   void _addSuccessParticles(Vector2 position) {
     final random = Random();
     world.add(
@@ -114,14 +153,14 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
           count: 25,
           lifespan: 1.0,
           generator: (i) => AcceleratedParticle(
-            acceleration: Vector2(0, 250), // Gravity effect
+            acceleration: Vector2(0, 250),
             speed: Vector2(
-              random.nextDouble() * 300 - 150, // Random horizontal velocity
-              -random.nextDouble() * 400, // Initial upward velocity
+              random.nextDouble() * 300 - 150,
+              -random.nextDouble() * 400,
             ),
             child: CircleParticle(
               radius: 2.5,
-              paint: Paint()..color = Colors.amber.withAlpha(128),
+              paint: Paint()..color = Colors.amber.withAlpha(230),
             ),
           ),
         ),
