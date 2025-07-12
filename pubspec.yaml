@@ -40,7 +40,7 @@ dependencies:
   flame: ^1.30.0
   shared_preferences: ^2.5.3
   flame_audio: ^2.11.7
-  freezed_annotation: ^2.4.1
+  freezed_annotation: ^3.1.0
   flutter_tts: ^4.0.2 # NEW: Added for Text-to-Speech
 
 dev_dependencies:
@@ -52,11 +52,11 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   build_runner: ^2.4.9
   json_serializable: ^6.8.0
   riverpod_generator: ^2.4.0
-  freezed: ^2.5.2
+  freezed: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

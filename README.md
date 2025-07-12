@@ -360,7 +360,7 @@ This milestone focuses on creating a polished and satisfying user experience.
 -   [✅] **Integrate sound effects** for key events (drag start, fusion success/fail, UI clicks, level up).
 -   [✅] **Add satisfying animations** for successful (e.g., particle burst) and failed (e.g., shake) fusions.
 -   [✅] **Implement the New Discovery Popup** showing `A + B = C` with an animation.
--   [🚧] **Integrate on-device Text-to-Speech** for pinyin pronunciation on the Character page and Discovery Popup.
+-   [✅] **Integrate on-device Text-to-Speech** for pinyin pronunciation on the Character page and Discovery Popup.
 -   [⬜] **Implement Dynamic Theming:** Change the app's color scheme based on the current HSK level.
 -   [⬜] **Build the Settings Screen** with options for sound, music, and resetting progress.
 -   [⬜] Add settings button to the game screen.
@@ -371,7 +371,7 @@ This milestone focuses on deepening the educational content and expanding the ga
 
 -   [x] **Expand character and recipe data** to over 200+ discoveries.
 -   [⬜] **Implement a Hint System** based on a combination of time and unique failed attempts.
--   [⬜] **Balance the discovery path** to ensure smooth progression and avoid getting stuck (prepare recipe paths to be sure).
+-   [⬜] **Balance the discovery path** to ensure smooth progression and avoid getting stuck (prepare recipe paths to be sure). Same recipe found again should not trigger animation.
 -   [⬜] **Expand `characters.json` with etymological data** for a richer "Discovery Book" experience.
 
 ### ⬜ Milestone 4: Deployment & Advanced Features
@@ -380,6 +380,160 @@ This milestone focuses on deepening the educational content and expanding the ga
 -   [ ] Prepare and publish the app to the Apple App Store.
 -   [ ] (Stretch Goal) Investigate Firebase integration for cloud sync.
 -   [ ] (Stretch Goal) Investigate deploying a web version using Flutter for Web.
+
+---
+
+# Paths (Spoiler)
+Paths need to be studied (in order) to be sure the player never gets stuck.
+
+### HSK 0
+4151: 丷 initial
+4143:丨 initial
+131: 一 initial
+丨 + 丷 = 丿
+一 + 丷 = ㇏
+一 + 一 = 27: 二
+一 + 丨 = 94: 十
+十 + 一 = 732: 干
+丷 + 干 = 半
+㇏ + 丿 = 人
+丨 + ㇏  = 4216:"亻",
+人 + 亻 163:"从",
+丨 + 人 31:"个",
+人 + ㇏ = 4329 入
+亻 + 十 = 4217 什
+㇏ + 一 6327:"𠂉",
+十 + 𠂉 4450:"午
+午 + 𠂉 = 75 年
+二 + 二 = 4349 冂
+冂 + 一 442:"口",
+口 + 丨 = 4146 中
+丿 + 丿 = 2 八
+𠂉 + 丨 =  4144:"丩",
+口 + 丩 = 46:"叫",
+口 + 丷 = 586:"只",
+八 + 人 =  4222:"介",
+丿 + 一 = 4180:"乚",
+丿 + 乚 = 4314:"儿",
+口 + 儿 = 103:"四",
+冂 + 儿 = 4319:"兄",
+兄 + 丷 = 4296:"兑",
+
+
+6056:"讠",
+5991:"说",
+5957:"计",
+5959:"认",
+5976:"识",
+4086:"㇉",
+459:"马",
+61:"吗",
+1864:"骂",
+2322:"乙",
+4182:"乞",
+11:"吃",
+4950:"气",
+4360:"冫",
+6274:"飞",
+4363:"况",
+87:"日",
+433:"旧",
+5153:"旦",
+4260:"但",
+5155:"早",
+4567:"唱",
+5516:"电",
+79:"七",
+4439:"化",
+4149:"丶",
+152:"白",
+153:"百",
+4085:"㇇",
+4221:"今",
+235:"千",
+5831:"舌",
+5982:"话",
+5312:"氵",
+5361:"活",
+885:"乱",
+5325:"汽",
+4084:"㇆",
+137:"月",
+571:"用",
+480:"胖",
+5199:"朋",
+5163:"明",
+4183:"习",
+4431:"勹",
+4072:"⺈",
+4503:"句",
+4432:"勺",
+15:"的",
+4187:"亅",
+55:"了",
+4714:"子",
+4758:"寸",
+5518:"时",
+6101:"辶",
+188:"过",
+4229:"付",
+5961:"讨",
+327:"才",
+5462:"牙",
+4464:"卜",
+90:"上",
+116:"下",
+4466:"卡",
+2224:"吓",
+4465:"占",
+5421:"灬",
+16:"点",
+238:"让",
+5284:"止",
+2409:"正",
+96:"是",
+5565:"目",
+5824:"自",
+6250:"面",
+6073:"身",
+6006:"谢",
+4878:"弋",
+4230:"代",
+5003:"戈",
+5019:"手",
+5022:"扌",
+112:"我",
+5010:"或",
+50:"看",
+5054:"担",
+1912:"拍",
+2136:"提",
+291:"找",
+5206:"木",
+6:"本",
+4261:"体",
+5207:"末",
+465:"米",
+53:"来",
+1389:"呆",
+4243:"休",
+5255:"桌",
+5567:"相",
+5616:"禾",
+37:"和",
+589:"种",
+1062:"香",
+43:"几",
+1651:"机",
+4918:"心",
+4919:"忄",
+121:"想",
+4958:"息",
+4949:"总",
+4935:"怕",
+4443:"匚",
+4818:"己"
+]
 
 ---
 
