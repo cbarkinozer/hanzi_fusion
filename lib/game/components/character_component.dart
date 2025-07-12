@@ -9,7 +9,7 @@ import 'package:hanzi_fusion/game/components/hanzi_text_component.dart';
 import 'package:hanzi_fusion/game/hanzi_fusion_game.dart';
 
 class CharacterComponent extends PositionComponent
-    with DragCallbacks, CollisionCallbacks, HasGameRef<HanziFusionGame> {
+    with DragCallbacks, CollisionCallbacks, HasGameReference<HanziFusionGame> {
   final GameCharacter character;
 
   CharacterComponent({
