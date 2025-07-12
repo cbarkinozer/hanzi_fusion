@@ -22,6 +22,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Hanzi Fusion',
       theme: ThemeData(
+        fontFamily: 'NotoSansSC', // Set default font for the entire app
         colorScheme: ColorScheme.fromSeed(
           seedColor: themeColor, // Use the dynamic theme color
           brightness: Brightness.dark,
