@@ -336,13 +336,11 @@ An array defining all valid combinations. It uses the actual characters as input
 ]
 ```
 
----
-
 ## 🗺️ Development Roadmap
 
-The project is broken down into key milestones. `☑️` = Done, `🚧` = In Progress, `⬜` = To-Do.
+The project is broken down into key milestones. `✅` = Done, `🚧` = In Progress, `⬜` = To-Do.
 
-### ☑️ Milestone 1: Core Engine & UI Foundation
+### ✅ Milestone 1: Core Engine & UI Foundation
 
 The basic gameplay loop and navigation are functional. Players can discover new characters, progress is saved locally, and they can browse their discoveries.
 
@@ -359,9 +357,10 @@ The basic gameplay loop and navigation are functional. Players can discover new 
 
 This milestone focuses on creating a polished and satisfying user experience.
 
--   [🚧] **Integrate sound effects** for key events (drag start, fusion success/fail, UI clicks, level up).
--   [⬜] **Add satisfying animations** for successful (e.g., particle burst) and failed (e.g., shake) fusions.
--   [⬜] **Implement the New Discovery Popup** showing `A + B = C` with an animation.
+-   [✅] **Integrate sound effects** for key events (drag start, fusion success/fail, UI clicks, level up).
+-   [✅] **Add satisfying animations** for successful (e.g., particle burst) and failed (e.g., shake) fusions.
+-   [✅] **Implement the New Discovery Popup** showing `A + B = C` with an animation.
+-   [🚧] **Integrate on-device Text-to-Speech** for pinyin pronunciation on the Character page and Discovery Popup.
 -   [⬜] **Implement Dynamic Theming:** Change the app's color scheme based on the current HSK level.
 -   [⬜] **Build the Settings Screen** with options for sound, music, and resetting progress.
 -   [⬜] Add settings button to the game screen.
@@ -371,9 +370,8 @@ This milestone focuses on creating a polished and satisfying user experience.
 This milestone focuses on deepening the educational content and expanding the gameplay.
 
 -   [x] **Expand character and recipe data** to over 200+ discoveries.
--   [⬜] **Integrate on-device Text-to-Speech** for pinyin pronunciation on the Character page and Discovery Popup.
 -   [⬜] **Implement a Hint System** based on a combination of time and unique failed attempts.
--   [⬜] **Balance the discovery path** to ensure smooth progression and avoid getting stuck.
+-   [⬜] **Balance the discovery path** to ensure smooth progression and avoid getting stuck (prepare recipe paths to be sure).
 -   [⬜] **Expand `characters.json` with etymological data** for a richer "Discovery Book" experience.
 
 ### ⬜ Milestone 4: Deployment & Advanced Features

@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hanzi_fusion/data/game_data_repository.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
+import 'package:hanzi_fusion/data/models/discovery_model.dart';
 import 'package:hanzi_fusion/game/components/character_component.dart';
 import 'package:hanzi_fusion/game/effects/shake_effect.dart';
+import 'package:hanzi_fusion/providers/game_event_provider.dart';
 import 'package:hanzi_fusion/providers/player_progress_provider.dart';
 import 'package:hanzi_fusion/providers/settings_provider.dart';
 
@@ -83,6 +85,14 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
         _addSuccessParticles(newCharPosition);
 
         ref.read(playerProgressProvider.notifier).addNewDiscovery(outputCharacter.id, recipeKey);
+        
+        // Trigger the discovery animation
+        ref.read(newDiscoveryProvider.notifier).state = Discovery(
+            input1: gameData.characterMapById[sortedIds[0]]!,
+            input2: gameData.characterMapById[sortedIds[1]]!,
+            output: outputCharacter,
+        );
+        
         if (sfxEnabled) FlameAudio.play('success.mp3', volume: 0.5);
       }
     } else { // BİRLEŞME BAŞARISIZ
