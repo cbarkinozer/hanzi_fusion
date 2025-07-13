@@ -40,6 +40,44 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     super.dispose();
   }
 
+  // UPDATED: Now provides feedback if no hints are available and shows progress.
+  Future<void> _handleUseHint() async {
+    final hintCount = ref.read(availableHintsProvider);
+    if (hintCount <= 0) {
+      if (mounted) {
+        // NEW: Get progress towards next hint to show in the message.
+        final progress = ref.read(hintProgressProvider);
+        const hintThreshold = 10;
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("No hints available. Progress: $progress/$hintThreshold unique failed fusions."),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      }
+      return;
+    }
+
+    final revealedChar = await ref.read(playerProgressProvider.notifier).useHint();
+    if (mounted && revealedChar != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Hint used! '${revealedChar.char}' has been added to your inventory."),
+          showCloseIcon: true,
+          duration: const Duration(seconds: 6),
+          backgroundColor: Colors.green.shade700,
+        ),
+      );
+    } else if (mounted) {
+       ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No suitable hint found right now. Keep experimenting!"),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameDataAsync = ref.watch(gameDataRepositoryProvider);
@@ -105,11 +143,39 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         });
 
         final lastDiscovery = ref.watch(newDiscoveryProvider);
+        final hintCount = ref.watch(availableHintsProvider);
 
         return Scaffold(
           appBar: AppBar(
             title: Text('Hanzi Fusion - ${_pageTitles[_currentIndex]}'),
             centerTitle: true,
+            actions: [
+              if (_currentIndex == 0) ...[
+                IconButton(
+                  icon: const Icon(Icons.delete_sweep_outlined),
+                  tooltip: 'Clear the board',
+                  onPressed: () {
+                    _game?.clearBoard();
+                  },
+                ),
+                // UPDATED: Hint Button with better visual feedback
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Badge(
+                    label: Text(hintCount.toString()),
+                    isLabelVisible: hintCount > 0,
+                    child: IconButton(
+                      // Icon changes from outline to filled when hints are available
+                      icon: Icon(hintCount > 0 ? Icons.lightbulb : Icons.lightbulb_outline), 
+                      tooltip: 'Use a hint',
+                      // Icon color changes to yellow when hints are available
+                      color: hintCount > 0 ? Colors.yellow.shade600 : null,
+                      onPressed: _handleUseHint,
+                    ),
+                  ),
+                ),
+              ]
+            ],
           ),
           body: Stack(
             children: [

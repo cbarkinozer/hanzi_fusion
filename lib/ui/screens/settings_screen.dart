@@ -31,6 +31,15 @@ class SettingsScreen extends ConsumerWidget {
             },
             secondary: const Icon(Icons.music_note_outlined),
           ),
+          SwitchListTile(
+            title: const Text('Pronunciation (TTS)'),
+            subtitle: const Text('Read out new discoveries'),
+            value: data.ttsEnabled,
+            onChanged: (value) {
+              ref.read(settingsProvider.notifier).toggleTts();
+            },
+            secondary: const Icon(Icons.record_voice_over_outlined),
+          ),
           const Divider(height: 40),
           FilledButton.tonal(
             onPressed: () => _confirmReset(context, ref),
