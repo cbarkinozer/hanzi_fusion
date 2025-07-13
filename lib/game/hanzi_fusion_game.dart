@@ -28,8 +28,8 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
 
   @override
   Future<void> onLoad() async {
-    debugMode = true;
-    await FlameAudio.audioCache.loadAll(['success.mp3', 'fail.mp3', 'click.mp3', 'drop.mp3']);
+    debugMode = false; // Set to true for collision hitboxes
+    await FlameAudio.audioCache.loadAll(['success.mp3', 'fail.mp3', 'click.mp3', 'drop.mp3', 'clear.mp3']);
   }
 
   void addCharacterFromDrop(GameCharacter character, Offset screenPosition) {
@@ -68,6 +68,9 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
     final sfxEnabled = ref.read(settingsProvider).value?.sfxEnabled ?? true;
     if (gameData == null) return;
 
+    // UPDATED: Symmetrical recipe check. By sorting the IDs before creating the key,
+    // we ensure that the check is always the same, regardless of which character
+    // is dragged onto the other.
     final sortedIds = [droppedComponent.character.id, fusionTarget.character.id]..sort();
     final recipeKey = "${sortedIds[0]}-${sortedIds[1]}";
     final recipe = gameData.recipeMapByKey[recipeKey];
@@ -75,33 +78,48 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
     if (recipe != null) { // BİRLEŞME BAŞARILI
       final outputCharacter = gameData.characterMapById[recipe.outputId];
       if (outputCharacter != null) {
-        // Yeni karakter, birleşmenin olduğu yerde (hedefin konumunda) oluşur.
+        
+        final playerProgress = ref.read(playerProgressProvider).value;
+        final bool isTrulyNewDiscovery = !(playerProgress?.discoveredCharacterIds.contains(outputCharacter.id) ?? false);
+
         final newCharPosition = fusionTarget.position.clone();
 
         world.remove(droppedComponent);
         world.remove(fusionTarget);
 
         _spawnCharacter(outputCharacter, newCharPosition);
-        _addSuccessParticles(newCharPosition);
-
+        
         ref.read(playerProgressProvider.notifier).addNewDiscovery(outputCharacter.id, recipeKey);
         
-        // Trigger the discovery animation
-        ref.read(newDiscoveryProvider.notifier).state = Discovery(
-            input1: gameData.characterMapById[sortedIds[0]]!,
-            input2: gameData.characterMapById[sortedIds[1]]!,
-            output: outputCharacter,
-        );
-        
-        if (sfxEnabled) FlameAudio.play('success.mp3', volume: 0.5);
+        if (isTrulyNewDiscovery) {
+          _addSuccessParticles(newCharPosition);
+          
+          ref.read(newDiscoveryProvider.notifier).state = Discovery(
+              input1: gameData.characterMapById[sortedIds[0]]!,
+              input2: gameData.characterMapById[sortedIds[1]]!,
+              output: outputCharacter,
+          );
+          
+          if (sfxEnabled) FlameAudio.play('success.mp3', volume: 0.5);
+        }
       }
     } else { // BİRLEŞME BAŞARISIZ
       if (sfxEnabled) FlameAudio.play('fail.mp3', volume: 0.5);
+      ref.read(playerProgressProvider.notifier).addFailedAttempt(recipeKey);
       droppedComponent.add(shakeEffect());
       fusionTarget.add(shakeEffect());
     }
 
     latestCollisionTarget = null;
+  }
+  
+  // NEW: Function to remove all characters from the game board.
+  void clearBoard() {
+    world.removeAll(world.children.whereType<CharacterComponent>());
+    final sfxEnabled = ref.read(settingsProvider).value?.sfxEnabled ?? true;
+    if (sfxEnabled) {
+      FlameAudio.play('clear.mp3', volume: 0.6);
+    }
   }
 
   void _addSuccessParticles(Vector2 position) {

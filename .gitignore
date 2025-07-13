@@ -10,7 +10,8 @@
 .history
 .svn/
 .vercel/*
-
+**/*.g.dart
+*.freezed.dart
 # IntelliJ related
 *.iml
 *.ipr
@@ -71,3 +72,4 @@ pubspec.lock
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+.vercel

@@ -8,24 +8,36 @@ part 'settings_provider.g.dart';
 class SettingsData {
   final bool sfxEnabled;
   final bool musicEnabled;
+  final bool ttsEnabled;
 
-  const SettingsData({this.sfxEnabled = true, this.musicEnabled = true});
+  const SettingsData({
+    this.sfxEnabled = true,
+    this.musicEnabled = true,
+    this.ttsEnabled = true,
+  });
 
-  SettingsData copyWith({bool? sfxEnabled, bool? musicEnabled}) {
+  SettingsData copyWith({
+    bool? sfxEnabled,
+    bool? musicEnabled,
+    bool? ttsEnabled,
+  }) {
     return SettingsData(
       sfxEnabled: sfxEnabled ?? this.sfxEnabled,
       musicEnabled: musicEnabled ?? this.musicEnabled,
+      ttsEnabled: ttsEnabled ?? this.ttsEnabled,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'sfxEnabled': sfxEnabled,
         'musicEnabled': musicEnabled,
+        'ttsEnabled': ttsEnabled,
       };
 
   factory SettingsData.fromJson(Map<String, dynamic> json) => SettingsData(
-        sfxEnabled: json['sfxEnabled'] as bool,
-        musicEnabled: json['musicEnabled'] as bool,
+        sfxEnabled: json['sfxEnabled'] as bool? ?? true,
+        musicEnabled: json['musicEnabled'] as bool? ?? true,
+        ttsEnabled: json['ttsEnabled'] as bool? ?? true,
       );
 }
 
@@ -41,7 +53,12 @@ class Settings extends _$Settings {
     _prefs = await SharedPreferences.getInstance();
     final jsonString = _prefs.getString(_settingsKey);
     if (jsonString != null) {
-      return SettingsData.fromJson(json.decode(jsonString));
+      try {
+        return SettingsData.fromJson(json.decode(jsonString));
+      } catch (_) {
+        // If parsing fails, return default.
+        return const SettingsData();
+      }
     }
     return const SettingsData(); // Return default settings
   }
@@ -59,5 +76,10 @@ class Settings extends _$Settings {
   Future<void> toggleMusic() async {
     final currentSettings = state.value ?? const SettingsData();
     await _save(currentSettings.copyWith(musicEnabled: !currentSettings.musicEnabled));
+  }
+
+  Future<void> toggleTts() async {
+    final currentSettings = state.value ?? const SettingsData();
+    await _save(currentSettings.copyWith(ttsEnabled: !currentSettings.ttsEnabled));
   }
 }
