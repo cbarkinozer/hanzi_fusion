@@ -18,6 +18,10 @@
 *.iws
 .idea/
 
+build/flutter_assets
+build/df713eb52c63fa6c02ecc8fe60c44788
+build/5ed1ec56e46357ec5ad2faed02821e03.cache.dill.track.dill
+
 # Visual Studio Code related
 .vscode/
 
@@ -28,7 +32,6 @@
 .packages
 .pub-cache/
 .pub/
-build/
 pubspec.lock
 
 # Android related
