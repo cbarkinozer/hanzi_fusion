@@ -1,5 +1,4 @@
 {
-  "framework": "flutter",
   "buildCommand": "flutter build web --release",
   "outputDirectory": "build/web"
 }
