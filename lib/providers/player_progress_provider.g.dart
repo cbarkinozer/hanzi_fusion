@@ -6,7 +6,7 @@ part of 'player_progress_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$availableHintsHash() => r'8fb9404c3e8e9e55a27fe65c210bc98c2a54f40c';
+String _$availableHintsHash() => r'5b5fc58b5b6c31e2355bbc78d827ce58a42a1e29';
 
 /// A provider that calculates the number of hints the player has available.
 ///
@@ -25,7 +25,7 @@ final availableHintsProvider = AutoDisposeProvider<int>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AvailableHintsRef = AutoDisposeProviderRef<int>;
-String _$playerProgressHash() => r'cdae71b931fc3c43ba1e0d0273fe5f7a08c0cda3';
+String _$playerProgressHash() => r'e0738787fff11b95eb8000a434e8d43116ec6fe4';
 
 /// See also [PlayerProgress].
 @ProviderFor(PlayerProgress)

@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hanzi_fusion/data/game_data_repository.dart';
 import 'package:hanzi_fusion/data/models/character_model.dart';
 import 'package:hanzi_fusion/data/models/player_progress_model.dart';
@@ -12,7 +13,7 @@ part 'player_progress_provider.g.dart';
 
 /// A provider that calculates the number of hints the player has available.
 @riverpod
-int availableHints(AvailableHintsRef ref) {
+int availableHints(Ref ref) {
   final progress = ref.watch(playerProgressProvider).valueOrNull;
   if (progress == null) return 0;
 
@@ -32,7 +33,7 @@ class PlayerProgress extends _$PlayerProgress {
   static const _progressKey = 'playerProgressData';
 
   // The initial characters
-  final _initialCharacterIds = [4149, 4143, 131];
+  final _initialCharacterIds = [1, 2, 3]; // UPDATED: New initial characters (丶, 丨, 一)
 
   @override
   Future<PlayerProgressData> build() async {

@@ -40,7 +40,21 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     super.dispose();
   }
 
+  // UPDATED: Now provides feedback if no hints are available.
   Future<void> _handleUseHint() async {
+    final hintCount = ref.read(availableHintsProvider);
+    if (hintCount <= 0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("No hints available. Earn one with 10 unique failed fusions!"),
+            duration: Duration(seconds: 4),
+          ),
+        );
+      }
+      return;
+    }
+
     final revealedChar = await ref.read(playerProgressProvider.notifier).useHint();
     if (mounted && revealedChar != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,7 +68,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     } else if (mounted) {
        ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("No hints available right now. Keep experimenting!"),
+          content: Text("No suitable hint found right now. Keep experimenting!"),
         ),
       );
     }
@@ -131,21 +145,32 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           appBar: AppBar(
             title: Text('Hanzi Fusion - ${_pageTitles[_currentIndex]}'),
             centerTitle: true,
+            // UPDATED: Added a Clear Board button and made Hint button always active
             actions: [
-              if (_currentIndex == 0) // Only show hint button on the Game page
+              if (_currentIndex == 0) ...[
+                // NEW: Clear Board Button
+                IconButton(
+                  icon: const Icon(Icons.delete_sweep_outlined),
+                  tooltip: 'Clear the board',
+                  onPressed: () {
+                    _game?.clearBoard();
+                  },
+                ),
+                // UPDATED: Hint Button
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Badge(
                     label: Text(hintCount.toString()),
                     isLabelVisible: hintCount > 0,
                     child: IconButton(
-                      icon: const Icon(Icons.lightbulb),
+                      icon: const Icon(Icons.lightbulb_outline),
                       tooltip: 'Use a hint',
                       color: hintCount > 0 ? Colors.yellow.shade600 : null,
-                      onPressed: hintCount > 0 ? _handleUseHint : null,
+                      onPressed: _handleUseHint, // Always enabled
                     ),
                   ),
                 ),
+              ]
             ],
           ),
           body: Stack(
