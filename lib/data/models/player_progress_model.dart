@@ -5,11 +5,12 @@ part 'player_progress_model.freezed.dart';
 part 'player_progress_model.g.dart';
 
 @freezed
-class PlayerProgressData with _$PlayerProgressData {
+abstract class PlayerProgressData with _$PlayerProgressData {
   const factory PlayerProgressData({
-   
     required List<int> discoveredCharacterIds,
     required Set<String> discoveredRecipeKeys,
+    @Default({}) Set<String> uniqueFailedAttempts,
+    @Default(0) int hintsUsed,
   }) = _PlayerProgressData;
 
   factory PlayerProgressData.fromJson(Map<String, dynamic> json) =>

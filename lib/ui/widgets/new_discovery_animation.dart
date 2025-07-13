@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hanzi_fusion/data/models/discovery_model.dart';
 import 'package:hanzi_fusion/providers/game_event_provider.dart';
+import 'package:hanzi_fusion/providers/settings_provider.dart';
 import 'package:hanzi_fusion/providers/tts_provider.dart';
 
 class NewDiscoveryAnimation extends ConsumerStatefulWidget {
@@ -46,6 +47,10 @@ class _NewDiscoveryAnimationState extends ConsumerState<NewDiscoveryAnimation>
   }
 
   Future<void> _speakDiscovery() async {
+    // Check if TTS is enabled in settings
+    final ttsEnabled = ref.read(settingsProvider).value?.ttsEnabled ?? true;
+    if (!ttsEnabled) return;
+
     // This sequence will now work correctly because `tts.speak` waits
     // for the utterance to finish.
     final tts = ref.read(ttsServiceProvider);

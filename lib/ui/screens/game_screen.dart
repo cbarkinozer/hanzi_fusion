@@ -40,6 +40,26 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     super.dispose();
   }
 
+  Future<void> _handleUseHint() async {
+    final revealedChar = await ref.read(playerProgressProvider.notifier).useHint();
+    if (mounted && revealedChar != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Hint used! '${revealedChar.char}' has been added to your inventory."),
+          showCloseIcon: true,
+          duration: const Duration(seconds: 6),
+          backgroundColor: Colors.green.shade700,
+        ),
+      );
+    } else if (mounted) {
+       ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No hints available right now. Keep experimenting!"),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameDataAsync = ref.watch(gameDataRepositoryProvider);
@@ -105,11 +125,28 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         });
 
         final lastDiscovery = ref.watch(newDiscoveryProvider);
+        final hintCount = ref.watch(availableHintsProvider);
 
         return Scaffold(
           appBar: AppBar(
             title: Text('Hanzi Fusion - ${_pageTitles[_currentIndex]}'),
             centerTitle: true,
+            actions: [
+              if (_currentIndex == 0) // Only show hint button on the Game page
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Badge(
+                    label: Text(hintCount.toString()),
+                    isLabelVisible: hintCount > 0,
+                    child: IconButton(
+                      icon: const Icon(Icons.lightbulb),
+                      tooltip: 'Use a hint',
+                      color: hintCount > 0 ? Colors.yellow.shade600 : null,
+                      onPressed: hintCount > 0 ? _handleUseHint : null,
+                    ),
+                  ),
+                ),
+            ],
           ),
           body: Stack(
             children: [

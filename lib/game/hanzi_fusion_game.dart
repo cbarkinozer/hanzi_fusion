@@ -75,6 +75,12 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
     if (recipe != null) { // BİRLEŞME BAŞARILI
       final outputCharacter = gameData.characterMapById[recipe.outputId];
       if (outputCharacter != null) {
+        
+        // --- FIX: Check if the character is a new discovery BEFORE showing the animation ---
+        final playerProgress = ref.read(playerProgressProvider).value;
+        final bool isTrulyNewDiscovery = !(playerProgress?.discoveredCharacterIds.contains(outputCharacter.id) ?? false);
+        // --- END FIX ---
+
         // Yeni karakter, birleşmenin olduğu yerde (hedefin konumunda) oluşur.
         final newCharPosition = fusionTarget.position.clone();
 
@@ -82,21 +88,29 @@ class HanziFusionGame extends FlameGame with HasCollisionDetection {
         world.remove(fusionTarget);
 
         _spawnCharacter(outputCharacter, newCharPosition);
-        _addSuccessParticles(newCharPosition);
-
+        
+        // Always add the discovery to progress. The provider handles duplicates.
         ref.read(playerProgressProvider.notifier).addNewDiscovery(outputCharacter.id, recipeKey);
         
-        // Trigger the discovery animation
-        ref.read(newDiscoveryProvider.notifier).state = Discovery(
-            input1: gameData.characterMapById[sortedIds[0]]!,
-            input2: gameData.characterMapById[sortedIds[1]]!,
-            output: outputCharacter,
-        );
-        
-        if (sfxEnabled) FlameAudio.play('success.mp3', volume: 0.5);
+        // --- FIX: Only trigger animations and special sounds for TRULY new discoveries ---
+        if (isTrulyNewDiscovery) {
+          _addSuccessParticles(newCharPosition);
+          
+          // Trigger the discovery animation
+          ref.read(newDiscoveryProvider.notifier).state = Discovery(
+              input1: gameData.characterMapById[sortedIds[0]]!,
+              input2: gameData.characterMapById[sortedIds[1]]!,
+              output: outputCharacter,
+          );
+          
+          if (sfxEnabled) FlameAudio.play('success.mp3', volume: 0.5);
+        }
+        // --- END FIX ---
       }
     } else { // BİRLEŞME BAŞARISIZ
       if (sfxEnabled) FlameAudio.play('fail.mp3', volume: 0.5);
+      // Record the failed attempt for the hint system
+      ref.read(playerProgressProvider.notifier).addFailedAttempt(recipeKey);
       droppedComponent.add(shakeEffect());
       fusionTarget.add(shakeEffect());
     }
