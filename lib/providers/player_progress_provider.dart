@@ -27,13 +27,24 @@ int availableHints(Ref ref) {
   return max(0, hintsEarned - hintsUsed);
 }
 
+// NEW: This provider calculates the user's progress toward the next hint.
+@riverpod
+int hintProgress(Ref ref) {
+  final progress = ref.watch(playerProgressProvider).valueOrNull;
+  if (progress == null) return 0;
+  
+  const hintThreshold = 10;
+  return progress.uniqueFailedAttempts.length % hintThreshold;
+}
+
+
 @riverpod
 class PlayerProgress extends _$PlayerProgress {
   late SharedPreferences _prefs;
   static const _progressKey = 'playerProgressData';
 
   // The initial characters
-  final _initialCharacterIds = [1, 2, 3]; // UPDATED: New initial characters (丶, 丨, 一)
+  final _initialCharacterIds = [1, 2, 3];
 
   @override
   Future<PlayerProgressData> build() async {

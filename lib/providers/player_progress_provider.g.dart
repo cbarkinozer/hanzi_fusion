@@ -25,6 +25,22 @@ final availableHintsProvider = AutoDisposeProvider<int>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AvailableHintsRef = AutoDisposeProviderRef<int>;
+String _$hintProgressHash() => r'a2921eb1e8eb878069b2815cf454be5fc01bf413';
+
+/// See also [hintProgress].
+@ProviderFor(hintProgress)
+final hintProgressProvider = AutoDisposeProvider<int>.internal(
+  hintProgress,
+  name: r'hintProgressProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$hintProgressHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef HintProgressRef = AutoDisposeProviderRef<int>;
 String _$playerProgressHash() => r'e0738787fff11b95eb8000a434e8d43116ec6fe4';
 
 /// See also [PlayerProgress].

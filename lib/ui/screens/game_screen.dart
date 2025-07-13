@@ -40,15 +40,19 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     super.dispose();
   }
 
-  // UPDATED: Now provides feedback if no hints are available.
+  // UPDATED: Now provides feedback if no hints are available and shows progress.
   Future<void> _handleUseHint() async {
     final hintCount = ref.read(availableHintsProvider);
     if (hintCount <= 0) {
       if (mounted) {
+        // NEW: Get progress towards next hint to show in the message.
+        final progress = ref.read(hintProgressProvider);
+        const hintThreshold = 10;
+        
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("No hints available. Earn one with 10 unique failed fusions!"),
-            duration: Duration(seconds: 4),
+          SnackBar(
+            content: Text("No hints available. Progress: $progress/$hintThreshold unique failed fusions."),
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -145,10 +149,8 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           appBar: AppBar(
             title: Text('Hanzi Fusion - ${_pageTitles[_currentIndex]}'),
             centerTitle: true,
-            // UPDATED: Added a Clear Board button and made Hint button always active
             actions: [
               if (_currentIndex == 0) ...[
-                // NEW: Clear Board Button
                 IconButton(
                   icon: const Icon(Icons.delete_sweep_outlined),
                   tooltip: 'Clear the board',
@@ -156,17 +158,19 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     _game?.clearBoard();
                   },
                 ),
-                // UPDATED: Hint Button
+                // UPDATED: Hint Button with better visual feedback
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Badge(
                     label: Text(hintCount.toString()),
                     isLabelVisible: hintCount > 0,
                     child: IconButton(
-                      icon: const Icon(Icons.lightbulb_outline),
+                      // Icon changes from outline to filled when hints are available
+                      icon: Icon(hintCount > 0 ? Icons.lightbulb : Icons.lightbulb_outline), 
                       tooltip: 'Use a hint',
+                      // Icon color changes to yellow when hints are available
                       color: hintCount > 0 ? Colors.yellow.shade600 : null,
-                      onPressed: _handleUseHint, // Always enabled
+                      onPressed: _handleUseHint,
                     ),
                   ),
                 ),

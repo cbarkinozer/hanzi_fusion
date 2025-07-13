@@ -41,7 +41,8 @@ dependencies:
   shared_preferences: ^2.5.3
   flame_audio: ^2.11.7
   freezed_annotation: ^3.1.0
-  flutter_tts: ^4.0.2 # NEW: Added for Text-to-Speech
+  flutter_tts: ^4.0.2 # mobile tts
+  audioplayers: ^6.0.0 # web tts
 
 dev_dependencies:
   flutter_test:
